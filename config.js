@@ -6,11 +6,10 @@
  ***/
 
 var mongo = require("mongoskin");
-var user = "yrVkrVLEwSJk",
-    pwd = "kRGCdu7BYK",
-    host = "127.0.0.1",
-    port = "20088",
-    db = "RoPZp2ieJYBZ";
+var dburls = {
+	dev: ":@127.0.0.1:27017/books",
+	online: "yrVkrVLEwSJk:kRGCdu7BYK@127.0.0.1:20088/RoPZp2ieJYBZ"
+};
 
-var db_url = exports.db_url = user + ":" + pwd + "@" + host + ":" + port + "/" + db;
+var db_url = exports.db_url = dburls.dev;
 exports.db = mongo.db(db_url);
