@@ -1,0 +1,4 @@
+{
+   "name":"Library",
+   "main":"./server.js"
+}
