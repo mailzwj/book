@@ -1,6 +1,25 @@
 extends layout
 
 block content
-    h3= title
+	h3= title
+	- var err = err
+	- var user = user
+	- if(err)
+		div.alert.alert-error #{err}
+	- if(user)
+		p.username #{user.realname}
+	- else
+		form.form-horizontal(action="/", method="post")
+			div.control-group
+				label.control-label(for="J_UserName") 账号：
+				div.controls
+					input.text-large(type="text", id="J_UserName", name="username", placeholder="姓名/昵称/邮箱")
+			div.control-group
+				label.control-label(for="J_UserPass") 密码：
+				div.controls
+					input.text-large(type="password", id="J_UserPass", name="userpass")
+			div.control-group
+				div.controls
+					input.btn.btn-primary(type="submit", value="登录")
 
         
