@@ -1,25 +1,109 @@
 extends layout
 
 block content
-	h3= title
-	- var err = err
-	- var user = user
-	- if(err)
-		div.alert.alert-error #{err}
-	- if(user)
-		p.username #{user.realname}
-	- else
-		form.form-horizontal(action="/", method="post")
-			div.control-group
-				label.control-label(for="J_UserName") 账号：
-				div.controls
-					input.text-large(type="text", id="J_UserName", name="username", placeholder="姓名/昵称/邮箱")
-			div.control-group
-				label.control-label(for="J_UserPass") 密码：
-				div.controls
-					input.text-large(type="password", id="J_UserPass", name="userpass")
-			div.control-group
-				div.controls
-					input.btn.btn-primary(type="submit", value="登录")
-
-        
+	div.pull-left.mainbox
+		div.search
+			form.form-search(action="/", method="get")
+				input.input.input-large.search-query(type="text", placeholder="搜索书名或关键字")
+				input.btn.btn-info.btn-search(type="submit", value="搜 索")
+				span.hot-keys 推荐搜索：
+				a.highlight(href="") javascript
+				| &nbsp;
+				a(href="") css
+				| &nbsp;
+				a(href="") nodejs
+				| &nbsp;
+				a(href="") 设计模式
+				| &nbsp;
+				a.highlight(href="") photoshop
+				| &nbsp;
+				a(href="") html5
+				| &nbsp;
+				a(href="") 移动web
+		div.booklist
+			div.search-keyword
+				i.icons.icon-title
+				| &nbsp;搜索关键词“
+				span.highlight photoshop
+				| ”结果列表：
+			ul.result-list
+				li.item.clearfix
+					a.pic-link(href="#")
+						img.list-pic(src="/images/pics.png", width="250", height="250")
+					div.list-detail
+						p.text-link
+							a(href="#") Photoshop CS6 中文版标准教程
+						table.book-info(border="0", width="100%")
+							tr
+								td(width="50%") 作&nbsp;&nbsp;&nbsp;&nbsp;者：肖著强，韩铁男，韩建敏 编著
+								td(width="50%") 出&nbsp;版&nbsp;社：中国青年出版社
+							tr
+								td 出版时间：2012-12-01
+								td 借阅次数：100次
+							tr
+								td 读书评论：500条
+								td 总体评价：8.5分
+						p.yahei.text-tit
+							推荐阅读
+						div.list-text
+							本书内容涵盖了Adobe Photoshop认证考试大纲要求的所有知识点，并针对Photoshop初学者的特点，对图层、路径、通道、蒙版、滤镜、文本等重点和难点内容进行了非常透彻的讲解。此外，每章还提供了课后习题，引导读者进行上机练习和自我测试......
+						a.yahei.btn.btn-info.btn-medium.btn-apply(href="#")
+							马上申请
+				li.item.clearfix
+					a.pic-link(href="#")
+						img.list-pic(src="/images/pics.png", width="250", height="250")
+					div.list-detail
+						p.text-link
+							a(href="#") Photoshop CS6 中文版标准教程
+						table.book-info(border="0", width="100%")
+							tr
+								td(width="50%") 作&nbsp;&nbsp;&nbsp;&nbsp;者：肖著强，韩铁男，韩建敏 编著
+								td(width="50%") 出&nbsp;版&nbsp;社：中国青年出版社
+							tr
+								td 出版时间：2012-12-01
+								td 借阅次数：100次
+							tr
+								td 读书评论：500条
+								td 总体评价：8.5分
+						p.yahei.text-tit
+							推荐阅读
+						div.list-text
+							本书内容涵盖了Adobe Photoshop认证考试大纲要求的所有知识点，并针对Photoshop初学者的特点，对图层、路径、通道、蒙版、滤镜、文本等重点和难点内容进行了非常透彻的讲解。此外，每章还提供了课后习题，引导读者进行上机练习和自我测试......
+						a.yahei.btn.btn-info.btn-medium.btn-apply(href="#")
+							马上申请
+	div.pull-right.sidebar
+		h3.yahei.sb-title
+			i.icons.icon-sbtitle
+			| &nbsp;最受欢迎TOP10
+		div.sb-body
+			ul.top-list
+				- str = '0123456789'.split("");
+				- each i in str
+					li.item
+						a(href="#")
+							i.icons.icon-books
+							| &nbsp;Photoshop CS6 中文版标...
+		h3.yahei.sb-title
+			i.icons.icon-sbtitle
+			| &nbsp;吐槽最多TOP5
+		div.sb-body
+			ul.top-list
+				- str = '01234'.split("");
+				- each i in str
+					li.item
+						a(href="#")
+							i.icons.icon-books
+							| &nbsp;Photoshop CS6 中文版标...
+		h3.yahei.sb-title
+			i.icons.icon-sbtitle
+			| &nbsp;管理
+		div.sb-body
+			ul.top-list
+				li.item
+					a(href="#") 修改个人信息
+				li.item
+					a(href="#") 管理我的图书
+				li.item
+					a(href="#") 切换用户
+				li.item
+					a(href="#") 退出

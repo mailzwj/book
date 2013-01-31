@@ -1,9 +1,42 @@
 doctype 5
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
-    link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.min.css')
-  body
-    div.container
-        block content
+	head
+		title= title
+		link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+		//link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.min.css')
+		link(rel='stylesheet', href='/stylesheets/library.css')
+		script(src="/javascripts/jquery-1.8.3.min.js")
+	body
+		div.page
+			div.header
+				div.container
+					a.logo(href="/")
+						img(src="/images/logo.png")
+					div.about-user
+						div.yahei.login-out(style="display:none;")
+							a(href="#") 登录
+							&nbsp;|&nbsp;
+							a(href="#") 注册
+						div.yahei.user-action
+							a.user-nick(href="#") 乐淘一少
+								i.icons.icon-hassub
+							ul.act-list
+								li.item
+									a(href="#") 个人信息
+								li.item
+									a(href="#") 退出
+			div.banner
+				div.container
+					div.banner-switch
+						img.thumb(src="/images/f2e-thumb.png", width="300", height="240")
+						img.intro(src="/images/f2e-intro.png", width="605", height="48")
+						ul.switch-bar
+							li.item.select 
+							li.item 
+							li.item 
+			div.container.blockcontent
+				block content
+			div.yahei.footer
+				div.container
+					&copy; UX	
+		script(src="/javascripts/library.js")

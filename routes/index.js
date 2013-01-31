@@ -9,9 +9,9 @@ var crypto = require("crypto");
 var errs = config.errs;
 var coll = db.collection("users");
 exports.index = function(req, res){
-	var err = req.param("err");
+	//var err = req.param("err");
 	var data = {title: "我的图书管理系统"};
-	if(err){
+	/*if(err){
 		data.err = errs[err];
 	}
 	var un = req.param("username");
@@ -34,5 +34,6 @@ exports.index = function(req, res){
 		});
 	}else{
 		res.render("index", data);
-	}
+	}*/
+	res.render("index", data);
 };

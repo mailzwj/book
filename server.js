@@ -10,7 +10,7 @@ var express = require('express')
     , path = require('path');
 var app = express();
 app.configure(function(){
-    app.set('port', process.env.PORT || cfg.ports.mac);
+    app.set('port', process.env.PORT || cfg.ports.remote);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     app.use(express.favicon());
