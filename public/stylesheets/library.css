@@ -167,18 +167,24 @@ ul, li {
 
 .banner .banner-switch .thumb {
 	position: absolute;
-	left: 25px;
+	/*left: 25px;*/
+	left: 1000px;
 	top: 0;
 	width: 300px;
 	height: 240px;
+	opacity: 0;
+	filter: alpha(opacity=0);
 }
 
 .banner .banner-switch .intro {
 	position: absolute;
-	left: 385px;
+	/*left: 385px;*/
+	left: 1000px;
 	top: 98px;
 	width: 605px;
 	height: 48px;
+	opacity: 0;
+	filter: alpha(opacity=0);
 }
 
 .banner .banner-switch .switch-bar {
