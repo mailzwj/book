@@ -5,7 +5,8 @@
 var express = require('express')
     , cfg = require("./config")
     , routes = require('./routes')
-    //, detail = require('./routes/detail')
+    , users = require('./routes/user')
+    , books = require('./routes/book')
     , http = require('http')
     , path = require('path');
 var app = express();
@@ -26,6 +27,9 @@ app.configure('development', function(){
     app.use(express.errorHandler());
 });
 app.all('/', routes.index);
+app.all('/login', routes.login);
+app.all('/logout', routes.logout);
+app.all('/adduser', routes.add);
 http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
 });

@@ -13,18 +13,21 @@ html
 					a.logo(href="/")
 						img(src="/images/logo.png")
 					div.about-user
-						div.yahei.login-out(style="display:none;")
-							a(href="#") 登录
-							&nbsp;|&nbsp;
-							a(href="#") 注册
-						div.yahei.user-action
-							a.user-nick(href="#") 乐淘一少
-								i.icons.icon-hassub
-							ul.act-list
-								li.item
-									a(href="#") 个人信息
-								li.item
-									a(href="#") 退出
+						- var nick = nick;
+						- if(nick)
+							div.yahei.user-action
+								a.user-nick(href="#") #{nick}
+									i.icons.icon-hassub
+								ul.act-list
+									li.item
+										a(href="/userinfo/#{nick}") 个人信息
+									li.item
+										a(href="/logout?redirect_url=#{page_url}") 退出
+						- else
+							div.yahei.login-out
+								a(href="/login?redirect_url=#{page_url}") 登录
+								&nbsp;|&nbsp;
+								a(href="#") 注册
 			div.banner
 				div.container
 					div.banner-switch
@@ -38,5 +41,6 @@ html
 				block content
 			div.yahei.footer
 				div.container
-					&copy; UX	
+					&copy; UX
+					| <a href="/adduser">添加用户</a>
 		script(src="/javascripts/library.js")
