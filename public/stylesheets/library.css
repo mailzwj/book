@@ -335,3 +335,48 @@ ul, li {
 .sidebar .top-list a {
 	color: #666;
 }
+
+.lg-pic {
+	width: 630px;
+	height: 400px;
+}
+
+.lg-main {
+	width: 348px;
+	height: 398px;
+	border: 1px solid #afdced;
+	background-color: #f4fcff;
+}
+
+.lg-main .lg-hd {
+	padding-left: 10px;
+	height: 39px;
+	line-height: 39px;
+	font-size: 16px;
+	color: #018fb6;
+	background-color: #f2f2f2;
+}
+
+.lg-main .lg-form {
+	padding-top: 40px;
+	padding-bottom: 25px;
+	background-color: #fff;
+}
+
+.lg-form .control-label {
+	width: 70px;
+}
+
+.lg-form .controls {
+	margin-left: 80px;
+}
+
+.lg-reg {
+	text-align: center;
+	line-height: 80px;
+	color: #018fb6;
+}
+
+.lg-reg a {
+	color: #ff9600;
+}

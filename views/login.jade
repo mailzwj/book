@@ -1,0 +1,26 @@
+extends layout
+
+block content
+	- if(err)
+		div.alert.alert-error= err
+	div.pull-left.lg-pic
+		img(src="", width="", height="")
+	div.pull-right.lg-main
+		h3.yahei.lg-hd 现在就登录
+		div.lg-bd
+			form.form-horizontal.lg-form(action="/login", method="post")
+				input(type="hidden", name="redirect_url", value="#{redirect_url}")
+				div.control-group
+					label.control-label(for="lg-uid") 账 号
+					div.controls
+						input(type="text", id="lg-uid", name="uid", placeholder="账号")
+				div.control-group
+					label.control-label(for="lg-pwd") 密 码
+					div.controls
+						input(type="password", id="lg-pwd", name="pwd", placeholder="密码")
+				div.control-group
+					div.controls
+						input.btn.btn-info(type="submit", value="登 录")
+						| &nbsp;
+						input.btn(type="reset", value="重 置")
+			p.yahei.lg-reg 还没有账号，现在<a href="/reg" target="_blank">注册</a>?

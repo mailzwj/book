@@ -22,8 +22,12 @@ exports.login = function(uid, pwd, rurl, req, res){
 			if(err){
 				throw err;
 			}
-			req.session.nick = rs.nick;
-			res.redirect(rurl);
+			if(rs){
+				req.session.nick = rs.nick;
+				res.redirect(rurl);
+			}else{
+				res.render("login", {title: "登录>>我的图书管理系统", page_url: rurl, err: "请检查用户名或密码是否正确。", redirect_url: "/"});
+			}
 		});
 	}else{
 		res.redirect(rurl);
@@ -43,7 +47,10 @@ exports.del = function(uid){
 //判断用户是否已登录，并返回相关值
 exports.islogin = function(req){
 	//check login
-	var usession = req.session.nick;
+	var usession = "";
+	if(req.session){
+		usession = req.session.nick;
+	}
 	if(usession){
 		return usession;
 	}else{
