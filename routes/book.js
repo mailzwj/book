@@ -34,10 +34,10 @@ exports.pullborrow = function(username, book_id){
 	//通过或拒绝的借书申请，从临时表删除记录
 };
 
-exports.pushalso = function(username, bookname, book_id, book_cate, also_time){
+exports.pushreturn = function(username, bookname, book_id, book_cate, also_time){
 	//将还书申请放入临时表
 };
 
-exports.pullalso = function(username, book_id){
+exports.pullreturn = function(username, book_id){
 	//通过或拒绝的还书申请，从临时表删除记录
 };
