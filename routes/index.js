@@ -9,12 +9,25 @@ var errs = config.errs;
 var users = require('./user');
 var books = require('./book');
 exports.index = function(req, res){
-	//var err = req.param("err");
-	var data = {title: "我的图书管理系统", page_url: req.url};
+	var kw = req.param("s");
+	var page = req.param("page") ? req.param("page") : 1;
+	var list_num = 10;
+	if(!kw){
+		kw = "";
+	}
+	var data = {title: "我的图书管理系统", page_url: req.url.replace(/\?.*$/g, ""), kw: kw, err: null, list: [], nick: null};
 	if(users.islogin(req)){
 		data.nick = users.islogin(req);
 	}
-	res.render("index", data);
+	books.getbooklist(kw, (page - 1) * list_num, list_num, function(rs){
+		if(rs === "error"){
+			data.err = "查询图书列表出错，请尝试刷新页面重试。";
+		}else{
+			data.list = rs;
+		}
+		console.log(data);
+		res.render("index", data);
+	});
 };
 
 exports.add = function(req, res){
@@ -42,7 +55,7 @@ exports.login = function(req, res){
 	var err = req.param("err");
 	var uid = req.param("uid");
 	var pwd = req.param("pwd");
-	var data = {title: "登录>>我的图书管理系统", page_url: req.url, redirect_url: "/", err: null};
+	var data = {title: "登录>>我的图书管理系统", page_url: req.url, redirect_url: "/", err: null, nick: null};
 	if(!r_url){
 		r_url = "/";
 	}
@@ -64,3 +77,32 @@ exports.logout = function(req, res){
 	req.session.nick = null;
 	res.redirect(req.param("redirect_url"));
 };
+
+exports.addbook = function(req, res){
+	var err = req.param("err");
+	var suc = req.param("success");
+	var data = {title: "添加图书", page_url: req.url.replace(/\?.*$/g, ""), err: null, success: null, nick: null};
+	if(users.islogin(req)){
+		data.nick = users.islogin(req);
+	}
+	if(err){
+		data.err = err;
+	}
+	if(suc){
+		data.success = suc;
+	}
+	res.render("addbook", data);
+};
+
+exports.savebook = function(req, res){
+	console.log(users.islogin(req));
+	if(!users.islogin(req)){
+		res.redirect("/addbook?err=添加图书前，请先登录。");
+	}else{
+		var bookname = "Photoshop CS6 中文版标准教程";
+		var book_cate = 1;
+		var rc = "本书内容涵盖了Adobe Photoshop认证考试大纲要求的所有知识点，并针对Photoshop初学者的特点，对图层、路径、通道、蒙版、滤镜、文本等重点和难点内容进行了非常透彻的讲解。此外，每章还提供了课后习题，引导读者进行上机练习和自我测试";
+		var host = req.host;
+		books.add(bookname, "http://" + host + "/images/pics.png", "肖著强，韩铁男，韩建敏", "中国青年出版社", "2012-12-01", rc, book_cate, res);
+	}
+}

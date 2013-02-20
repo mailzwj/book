@@ -14,7 +14,6 @@ html
 					a.logo(href="/")
 						img(src="/images/logo.png")
 					div.about-user
-						- var nick = nick;
 						- if(nick)
 							div.yahei.user-action
 								a.user-nick(href="#") #{nick}
@@ -47,5 +46,5 @@ html
 			div.yahei.footer
 				div.container
 					&copy; UX
-					| <a href="/adduser">添加用户</a>
+					| <a href="/addbook">添加图书</a>
 		script(src="/javascripts/library.js")

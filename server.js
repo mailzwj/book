@@ -30,6 +30,8 @@ app.all('/', routes.index);
 app.all('/login', routes.login);
 app.all('/logout', routes.logout);
 app.all('/adduser', routes.add);
+app.all('/addbook', routes.addbook);
+app.all('/savebook', routes.savebook);
 http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
 });
