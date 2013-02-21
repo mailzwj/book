@@ -25,7 +25,6 @@ exports.index = function(req, res){
 		}else{
 			data.list = rs;
 		}
-		console.log(data);
 		res.render("index", data);
 	});
 };
