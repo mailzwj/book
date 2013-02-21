@@ -1,0 +1,8 @@
+extends layout
+
+block content
+	- if(err)
+		div.alert.alert-error= err
+	- if(success)
+		div.alert.alert-info= success
+	a(href="/updatebook") 添加书籍

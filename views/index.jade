@@ -37,11 +37,11 @@ block content
 				- if(list)
 				- each rs in list
 					li.item.clearfix
-						a.pic-link(href="/bookdetail/#{rs._id}")
+						a.pic-link(href="/bookdetail/#{rs.isbn}")
 							img.list-pic(src="#{rs.pic}", width="250", height="250")
 						div.list-detail
 							p.text-link
-								a(href="/bookdetail/#{rs._id}") #{rs.bookname}
+								a(href="/bookdetail/#{rs.isbn}") #{rs.bookname}
 							table.book-info(border="0", width="100%")
 								tr
 									td(width="50%") 作&nbsp;&nbsp;&nbsp;&nbsp;者：#{rs.author} 编著
@@ -50,12 +50,12 @@ block content
 									td 出版时间：#{rs.publish_date}
 									td 借阅次数：#{rs.borrow_times}次
 								tr
-									td 读书评论：#{rs.comment_num}条
+									td ＩＳＢＮ：#{rs.isbn}
 									td 总体评价：#{rs.score}分
 							p.yahei.text-tit
 								推荐阅读
 							div.list-text #{rs.recommend}
-							a.yahei.btn.btn-info.btn-medium.btn-apply(href="/apply/#{rs._id}") 马上申请
+							a.yahei.btn.btn-info.btn-medium.btn-apply(href="/apply/#{rs.isbn}") 马上申请
 
 	div.pull-right.sidebar
 		h3.yahei.sb-title

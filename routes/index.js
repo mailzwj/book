@@ -94,15 +94,42 @@ exports.addbook = function(req, res){
 	res.render("addbook", data);
 };
 
+exports.updatebook = function(req, res){
+	var err = req.param("err");
+	var suc = req.param("success");
+	var data = {title: "修改图书信息", page_url: req.url.replace(/\?.*$/g, ""), err: null, success: null, nick: null};
+	if(users.islogin(req)){
+		data.nick = users.islogin(req);
+	}
+	if(err){
+		data.err = err;
+	}
+	if(suc){
+		data.success = suc;
+	}
+	res.render("updatebook", data);
+};
+
 exports.savebook = function(req, res){
-	console.log(users.islogin(req));
 	if(!users.islogin(req)){
 		res.redirect("/addbook?err=添加图书前，请先登录。");
 	}else{
 		var bookname = "Photoshop CS6 中文版标准教程";
 		var book_cate = 1;
-		var rc = "本书内容涵盖了Adobe Photoshop认证考试大纲要求的所有知识点，并针对Photoshop初学者的特点，对图层、路径、通道、蒙版、滤镜、文本等重点和难点内容进行了非常透彻的讲解。此外，每章还提供了课后习题，引导读者进行上机练习和自我测试";
+		var rc = "本书内容涵盖了Adobe Photoshop认证考试大纲要求的所有知识点，并针对Photoshop初学者的特点，对图层、路径、通道、蒙版、滤镜、文本等重点和难点内容进行了非常透彻的讲解。此外，每章还提供了课后习题，引导读者进行上机" + new Date().getTime();
 		var host = req.host;
-		books.add(bookname, "http://" + host + "/images/pics.png", "肖著强，韩铁男，韩建敏", "中国青年出版社", "2012-12-01", rc, book_cate, res);
+		var book_number = 10;
+		var isbn = "9787515311067";
+		books.hasbook(isbn, function(flag){
+			if(!flag){
+				books.add(bookname, "http://" + host + "/images/pics.png", "肖著强，韩铁男，韩建敏", "中国青年出版社", "2012-12-01", rc, isbn, book_cate, book_number, function(status, info){
+					res.redirect("/addbook?" + status + "=" + info);
+				});
+			}else{
+				books.update(bookname, "http://" + host + "/images/pics.png", "肖著强，韩铁男，韩建敏", "中国青年出版社", "2012-12-01", rc, isbn, book_cate, book_number, function(status, info){
+					res.redirect("/updatebook?" + status + "=" + info);
+				});
+			}
+		});
 	}
 }

@@ -32,6 +32,7 @@ app.all('/logout', routes.logout);
 app.all('/adduser', routes.add);
 app.all('/addbook', routes.addbook);
 app.all('/savebook', routes.savebook);
+app.all('/updatebook', routes.updatebook);
 http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
 });
