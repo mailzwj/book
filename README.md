@@ -12,11 +12,11 @@ books集合用于存储图书相关信息，其中包含以下文档（字段）
 - `book_number`字段除了记录图书可借册数外，还用于判断图书状态是否可借；
 - `isbn`字段用于图书去重；
 
-表格展示形式如下：
+表格(省去可扩展字段)展示形式如下：
 
-|bookname|pic|author|publish_house|publish_date|borrow_times|score|recommend|book_cate|isbn|book_number|
+|bookname|pic|author|publish_house|publish_date|recommend|book_cate|isbn|book_number|
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---|:---:|:---:|:---:|
-|PS教程|http://....png|XXX|邮电出版社|2013-01-01|5|0|推荐阅读|1|123456789|3|
+|PS教程|http://....png|XXX|邮电出版社|2013-01-01|推荐阅读|1|123456789|3|
 
 #####3.2 users集合
 users集合数据本身不由本系统创建，该集合数据由ark登录成功后返回用户信息写入，这样可以保证登入用户都是有效的系统内部用户，避免外部用户干扰。该集合包含以下文档（字段）：`nick`（用户昵称/旺旺）、`email`（用户邮箱）、`work_id`（工号）、`isadmin`（是否管理员标记）。
@@ -27,6 +27,12 @@ users集合数据本身不由本系统创建，该集合数据由ark登录成功
 - `work_id`字段可用于用户去重处理；
 - `isadmin`字段用于标记改用户是否管理员，标记值使用图书类别，这样就可以让管理员与其所管理的图书类别自然关联；
 
+表格展示形式如下：
+
+|nick|email|work_id|isadmin|
+|:---:|:---:|:---:|:---:|
+|乐淘|mailxxx@gmail.com|12345|0/1/2/3|
+
 #####3.3 lendhistory集合
 lendhistory集合用于存储用户借书/还书的整个过程，也兼任查询借阅历史的角色，该集合包含以下文档（字段）：`nick`（用户昵称）、`isbn`（图书标识）、`borrom_time`（借阅时间）、`return_time`（规定的还书时间）、`status`（接/还书状态标识）、`book_cate`（图书类别）。
 
@@ -36,3 +42,9 @@ lendhistory集合用于存储用户借书/还书的整个过程，也兼任查�
 - `borrow_time`和`return_time`之间是合理的借阅时间，即将达到规定还书时间还未还书的将给予邮件提醒；
 - `status`标识借/审/还/审状态，暂定分别以1,2,3,4标识；
 - `book_cate`用于管理员分类审核自己管理类别的图书借阅状态；
+
+表格展示形式如下：
+
+|nick|isbn|borrow_time|return_time|status|book_cate|
+|:---:|:---:|:---:|:---:|:---:|:---:|
+|乐淘|123456789|2013-01-01|2013-02-01|1/2/3/4|1|
