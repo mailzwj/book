@@ -34,7 +34,7 @@ users集合数据本身不由本系统创建，该集合数据由ark登录成功
 |乐淘|mailxxx@gmail.com|12345|0/1/2/3|
 
 #####3.3 lendhistory集合
-lendhistory集合用于存储用户借书/还书的整个过程，也兼任查询借阅历史的角色，该集合包含以下文档（字段）：`nick`（用户昵称）、`isbn`（图书标识）、`borrom_time`（借阅时间）、`return_time`（规定的还书时间）、`status`（接/还书状态标识）、`book_cate`（图书类别）。
+lendhistory集合用于存储用户借书/还书的整个过程，也兼任查询借阅历史的角色，该集合包含以下文档（字段）：`nick`（用户昵称）、`isbn`（图书标识）、`bookname`（图书名称）、`borrom_time`（借阅时间）、`return_time`（规定的还书时间）、`status`（接/还书状态标识）、`book_cate`（图书类别）。
 
 其中，以下需做特殊说明：
 
@@ -45,6 +45,6 @@ lendhistory集合用于存储用户借书/还书的整个过程，也兼任查�
 
 表格展示形式如下：
 
-|nick|isbn|borrow_time|return_time|status|book_cate|
-|:---:|:---:|:---:|:---:|:---:|:---:|
-|乐淘|123456789|2013-01-01|2013-02-01|1/2/3/4|1|
+|nick|isbn|bookname|borrow_time|return_time|status|book_cate|
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|乐淘|123456789|jQuery|2013-01-01|2013-02-01|1/2/3/4|1|
