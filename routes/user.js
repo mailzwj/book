@@ -26,7 +26,7 @@ exports.login = function(uid, pwd, rurl, req, res){
 				req.session.nick = rs.nick;
 				res.redirect(rurl);
 			}else{
-				res.render("login", {title: "登录>>我的图书管理系统", page_url: rurl, err: "请检查用户名或密码是否正确。", redirect_url: "/"});
+				res.render("login", {title: "登录>>我的图书管理系统", page_url: rurl, err: "请检查用户名或密码是否正确。", redirect_url: "/", nick: null});
 			}
 		});
 	}else{
