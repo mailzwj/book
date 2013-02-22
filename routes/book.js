@@ -88,6 +88,13 @@ exports.update = function(bookname, pic, author, publish_house, publish_date, re
 //根据bookid删除书籍
 exports.del = function(isbn, callback){
 	//delete book
+	bcol.delete({isbn: isbn}, function(err){
+		if(err){
+			callback("err", "删除失败了，请重试！");
+		}else{
+			callback("success", "删除成功！");
+		}
+	});
 };
 
 //判断图书可借状态，返回bool
