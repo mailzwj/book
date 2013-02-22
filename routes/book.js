@@ -15,7 +15,7 @@ exports.add = function(bookname, pic, author, publish_house, publish_date, recom
 			publish_house = publish_house ? publish_house : "",
 			publish_date = publish_date ? publish_date : "",
 			recomend = recomend ? recomend : "暂无推荐信息",
-			book_number = book_number ? book_number : 1;
+			book_number = book_number >= 0 ? book_number : 0;
 		bcol.insert({bookname: bookname, pic: pic, author: author, publish_house: publish_house, publish_date: publish_date, borrow_times: 0, score: 0, isbn: isbn, recommend: recommend, book_cate: book_cate, book_number: book_number}, function(err){
 			if(err){
 				//throw err;
@@ -49,7 +49,7 @@ exports.hasbook = function(isbn, callback){
 
 //获取图书列表
 exports.getbooklist = function(kw, start, len, callback){
-	bcol.find({}, {"limit": len, "skip": start}).toArray(function(err, rs){
+	bcol.find({"bookname": new RegExp(kw, "gi")}, {"limit": len, "skip": start, sort: [["publish_date", "desc"]]}).toArray(function(err, rs){
 		if(err){
 			callback("error");
 		}else{
@@ -67,7 +67,7 @@ exports.update = function(bookname, pic, author, publish_house, publish_date, re
 			publish_house = publish_house ? publish_house : "",
 			publish_date = publish_date ? publish_date : "",
 			recomend = recomend ? recomend : "暂无推荐信息",
-			book_number = book_number ? book_number : 1;
+			book_number = book_number >= 0 ? book_number : 0;
 		bcol.update({isbn: isbn}, {"$set": {bookname: bookname, pic: pic, author: author, publish_house: publish_house, publish_date: publish_date, borrow_times: 0, score: 0, recommend: recommend, book_cate: book_cate, book_number: book_number}}, function(err){
 			if(err){
 				//throw err;

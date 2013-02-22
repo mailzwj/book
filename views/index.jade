@@ -55,7 +55,11 @@ block content
 							p.yahei.text-tit
 								推荐阅读
 							div.list-text #{rs.recommend}
-							a.yahei.btn.btn-info.btn-medium.btn-apply(href="/apply/#{rs.isbn}") 马上申请
+							- var flag = parseInt(rs.book_number);
+							- if(flag <= 0)
+								a.yahei.btn.btn-medium.disabled.btn-apply(href="javascript:void(0);") 马上申请
+							- else
+								a.yahei.btn.btn-info.btn-medium.btn-apply(href="/apply/#{rs.isbn}") 马上申请
 
 	div.pull-right.sidebar
 		h3.yahei.sb-title
