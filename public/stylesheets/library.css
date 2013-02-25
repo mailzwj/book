@@ -264,6 +264,11 @@ ul, li {
 	border: 1px solid #ddd;
 }
 
+.result-list .pic-link img {
+	width: 250px;
+	height: 250px;
+}
+
 .result-list .list-detail {
 	float: right;
 	width: 500px;

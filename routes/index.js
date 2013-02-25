@@ -7,7 +7,6 @@ var crypto = require("crypto");
 var errs = config.errs;
 var users = require('./user');
 var books = require('./book');
-var http = require('http');
 
 exports.login = function(req, res, next){
 	users.login(req, res, next);
@@ -90,25 +89,58 @@ exports.updatebook = function(req, res){
 	res.render("updatebook", data);
 };
 exports.savebook = function(req, res){
+	var response = res, request = req;
 	if(!users.islogin(req)){
 		res.redirect("/addbook?err=" + encodeURIComponent("添加图书前，请先登录。"));
 	}else{
-		var bookname = "jQuery权威指南";
-		var book_cate = 1;
-		var rc = "本书内容涵盖了Adobe Photoshop认证考试大纲要求的所有知识点，并针对Photoshop初学者的特点，对图层、路径、通道、蒙版、滤镜、文本等重点和难点内容进行了非常透彻的讲解。此外，每章还提供了课后习题，引导读者进行上机" + new Date().getTime();
-		var host = req.host;
-		var book_number = 0;
-		var isbn = "9787111325437";
-		books.hasbook(isbn, function(flag){
-			if(!flag){
-				books.add(bookname, "http://" + host + "/images/pics.png", "肖著强，韩铁男，韩建敏", "中国青年出版社", "2012-12-01", rc, isbn, book_cate, book_number, function(status, info){
-					res.redirect("/addbook?" + status + "=" + encodeURIComponent(info));
+		if(req.param("isbn") && req.param("bc")){
+			var isbn = req.param("isbn");
+			var book_cate = req.param("bc");
+			var req = http.request({
+				host: "api.douban.com",
+				port: 80,
+				path: "/book/subject/isbn/" + isbn + "?alt=json",
+				method: "GET"
+			}, function(res){
+				var buf = [], size = 0;
+				res.on("data", function(data){
+					buf.push(data);
+					size += data.length;
 				});
-			}else{
-				books.update(bookname, "http://" + host + "/images/pics.png", "肖著强，韩铁男，韩建敏", "中国青年出版社", "2012-12-01", rc, isbn, book_cate, book_number, function(status, info){
-					res.redirect("/updatebook?" + status + "=" + encodeURIComponent(info));
+				res.on("end", function(){
+					var data = new Buffer(size);
+					for(var i = 0, pos = 0; i < buf.length; i++){
+						buf[i].copy(data, pos);
+						pos += buf[i].length;
+					}
+					//console.log(data.toString("utf8"));
+					data = data.toString("utf8");
+					data = JSON.parse(data);
+					console.log(data);
+					var bookinfo = data["db:attribute"], bl = bookinfo.length;
+					var rc = data["summary"]["$t"];
+					var links = data["link"][2]["@href"];
+					for(var bi = 0; bi < bl; bi ++){
+						bookinfo[bookinfo[bi]["@name"]] = bookinfo[bi]["$t"];
+					}
+					var bookname = bookinfo["title"];
+					var book_number = 1;
+					books.hasbook(isbn, function(flag){
+						if(!flag){
+							books.add(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, book_number, function(status, info){
+								response.redirect("/addbook?" + status + "=" + encodeURIComponent(info));
+							});
+						}else{
+							books.update(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, book_number, function(status, info){
+								response.redirect("/updatebook?" + status + "=" + encodeURIComponent(info));
+							});
+						}
+					});
 				});
-			}
-		});
+			});
+			req.end();
+		}else{
+			res.redirect("/addbook?err=" + encodeURIComponent("请输入ISBN编码。"));
+		}
 	}
 }

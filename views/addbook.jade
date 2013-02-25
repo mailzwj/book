@@ -5,4 +5,16 @@ block content
 		div.alert.alert-error= err
 	- if(success)
 		div.alert.alert-info= success
-	a(href="/savebook") 添加书籍
+	form.form-horizontal(action="/savebook", method="get")
+		div.control-group
+			label.control-label(for="LB-isbn") ISBN:
+			div.controls
+				input.input-large(type="text", name="isbn", id="LB-ISBN", placeholder="请填写图书ISBN编码")
+		div.control-group
+			label.control-label(for="LB-bookcate") ISBN:
+			div.controls
+				input.input-large(type="text", name="bc", id="LB-bookcate", placeholder="图书分类（1,2,3）")
+		div.control-group
+			div.controls
+				input.btn.btn-primary(type="submit", value="添加")
+	//a(href="/savebook") 添加书籍
