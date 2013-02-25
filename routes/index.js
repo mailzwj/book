@@ -124,6 +124,7 @@ exports.savebook = function(req, res){
 				var xml_data = xml(data);
 				var bookinfo = xml_data.findall(".//db:attribute"), bl = bookinfo.length;
 				var bookrc = xml_data.findall(".//summary");
+				var links = xml_data.findall(".//link[@rel='image']");
 				for(var bi = 0; bi < bl; bi ++){
 					bookinfo[bookinfo[bi].attrib.name] = bookinfo[bi].text;
 				}
@@ -133,7 +134,7 @@ exports.savebook = function(req, res){
 				var book_number = 1;
 				books.hasbook(isbn, function(flag){
 					if(!flag){
-						books.add(bookname, "http://" + host + "/images/pics.png", bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, book_number, function(status, info){
+						books.add(bookname, links[0].attrib.href, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, book_number, function(status, info){
 							res.redirect("/addbook?" + status + "=" + encodeURIComponent(info));
 						});
 					}else{
