@@ -7,7 +7,22 @@ var crypto = require("crypto");
 var errs = config.errs;
 var users = require('./user');
 var books = require('./book');
+var http = require('http');
 exports.index = function(req, res){
+	var user_info = req.cookies.user_info;
+	var domain,url;
+	if (!user_info) {
+		res.redirect('http://ux.etao.net/api/ucenter/userauth.php?domain=lingwu.etao.net&url=http%3A%2F%2Flingwu.etao.net%3A8080');
+	} else {
+		// res.end(user_info);
+		var user_info_ob = JSON.parse(decodeURIComponent(user_info));
+		//添加用户信息到数据库
+
+
+		res.end(user_info_ob.data.DomainUser);
+
+	}
+
 	var kw = req.param("s");
 	var page = req.param("page") ? req.param("page") : 1;
 	var list_num = 10;
