@@ -4,12 +4,10 @@
  */
 var config = require("../config");
 var crypto = require("crypto");
-var et = require("elementtree");
-var ng = require("nodegrass");
 var errs = config.errs;
 var users = require('./user');
 var books = require('./book');
-var xml = et.XML;
+var http = require("http");
 
 exports.index = function(req, res){
 	var kw = req.param("s");
@@ -114,38 +112,56 @@ exports.updatebook = function(req, res){
 	res.render("updatebook", data);
 };
 exports.savebook = function(req, res){
+	var response = res, request = req;
 	if(!users.islogin(req)){
 		res.redirect("/addbook?err=" + encodeURIComponent("添加图书前，请先登录。"));
 	}else{
 		if(req.param("isbn") && req.param("bc")){
 			var isbn = req.param("isbn");
 			var book_cate = req.param("bc");
-			ng.get("http://api.douban.com/book/subject/isbn/" + isbn, function(data, status, headers){
-				var xml_data = xml(data);
-				var bookinfo = xml_data.findall(".//db:attribute"), bl = bookinfo.length;
-				var bookrc = xml_data.findall(".//summary");
-				var links = xml_data.findall(".//link[@rel='image']");
-				for(var bi = 0; bi < bl; bi ++){
-					bookinfo[bookinfo[bi].attrib.name] = bookinfo[bi].text;
-				}
-				var bookname = bookinfo["title"];
-				var rc = bookrc[0].text;
-				var host = req.host;
-				var book_number = 1;
-				books.hasbook(isbn, function(flag){
-					if(!flag){
-						books.add(bookname, links[0].attrib.href, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, book_number, function(status, info){
-							res.redirect("/addbook?" + status + "=" + encodeURIComponent(info));
-						});
-					}else{
-						books.update(bookname, "http://" + host + "/images/pics.png", "肖著强，韩铁男，韩建敏", "中国青年出版社", "2012-12-01", rc, isbn, book_cate, book_number, function(status, info){
-							res.redirect("/updatebook?" + status + "=" + encodeURIComponent(info));
-						});
-					}
+			var req = http.request({
+				host: "api.douban.com",
+				port: 80,
+				path: "/book/subject/isbn/" + isbn + "?alt=json",
+				method: "GET"
+			}, function(res){
+				var buf = [], size = 0;
+				res.on("data", function(data){
+					buf.push(data);
+					size += data.length;
 				});
-			}, "utf8").on("error", function(err){
-				throw err;
+				res.on("end", function(){
+					var data = new Buffer(size);
+					for(var i = 0, pos = 0; i < buf.length; i++){
+						buf[i].copy(data, pos);
+						pos += buf[i].length;
+					}
+					//console.log(data.toString("utf8"));
+					data = data.toString("utf8");
+					data = JSON.parse(data);
+					console.log(data);
+					var bookinfo = data["db:attribute"], bl = bookinfo.length;
+					var rc = data["summary"]["$t"];
+					var links = data["link"][2]["@href"];
+					for(var bi = 0; bi < bl; bi ++){
+						bookinfo[bookinfo[bi]["@name"]] = bookinfo[bi]["$t"];
+					}
+					var bookname = bookinfo["title"];
+					var book_number = 1;
+					books.hasbook(isbn, function(flag){
+						if(!flag){
+							books.add(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, book_number, function(status, info){
+								response.redirect("/addbook?" + status + "=" + encodeURIComponent(info));
+							});
+						}else{
+							books.update(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, book_number, function(status, info){
+								response.redirect("/updatebook?" + status + "=" + encodeURIComponent(info));
+							});
+						}
+					});
+				});
 			});
+			req.end();
 		}else{
 			res.redirect("/addbook?err=" + encodeURIComponent("请输入ISBN编码。"));
 		}

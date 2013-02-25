@@ -5,8 +5,6 @@
    "dependencies": {
     "express": "3.0.6",
     "jade": "*",
-    "mongoskin": "0.5.0",
-    "elementtree": "0.1.5",
-    "nodegrass": "*"
+    "mongoskin": "0.5.0"
   }
 }
