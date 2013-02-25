@@ -26,10 +26,11 @@ app.configure(function(){
 app.configure('development', function(){
     app.use(express.errorHandler());
 });
+app.all('*',routes.login);
 app.all('/', routes.index);
-app.all('/login', routes.login);
-app.all('/logout', routes.logout);
-app.all('/adduser', routes.add);
+// app.all('/login', routes.login);
+// app.all('/logout', routes.logout);
+// app.all('/adduser', routes.add);
 app.all('/addbook', routes.addbook);
 app.all('/savebook', routes.savebook);
 app.all('/updatebook', routes.updatebook);
