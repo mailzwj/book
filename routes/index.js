@@ -4,9 +4,13 @@
  */
 var config = require("../config");
 var crypto = require("crypto");
+var et = require("elementtree");
+var ng = require("nodegrass");
 var errs = config.errs;
 var users = require('./user');
 var books = require('./book');
+var xml = et.XML;
+
 exports.index = function(req, res){
 	var kw = req.param("s");
 	var page = req.param("page") ? req.param("page") : 1;
@@ -113,22 +117,36 @@ exports.savebook = function(req, res){
 	if(!users.islogin(req)){
 		res.redirect("/addbook?err=" + encodeURIComponent("添加图书前，请先登录。"));
 	}else{
-		var bookname = "jQuery权威指南";
-		var book_cate = 1;
-		var rc = "本书内容涵盖了Adobe Photoshop认证考试大纲要求的所有知识点，并针对Photoshop初学者的特点，对图层、路径、通道、蒙版、滤镜、文本等重点和难点内容进行了非常透彻的讲解。此外，每章还提供了课后习题，引导读者进行上机" + new Date().getTime();
-		var host = req.host;
-		var book_number = 0;
-		var isbn = "9787111325437";
-		books.hasbook(isbn, function(flag){
-			if(!flag){
-				books.add(bookname, "http://" + host + "/images/pics.png", "肖著强，韩铁男，韩建敏", "中国青年出版社", "2012-12-01", rc, isbn, book_cate, book_number, function(status, info){
-					res.redirect("/addbook?" + status + "=" + encodeURIComponent(info));
+		if(req.param("isbn") && req.param("bc")){
+			var isbn = req.param("isbn");
+			var book_cate = req.param("bc");
+			ng.get("http://api.douban.com/book/subject/isbn/" + isbn, function(data, status, headers){
+				var xml_data = xml(data);
+				var bookinfo = xml_data.findall(".//db:attribute"), bl = bookinfo.length;
+				var bookrc = xml_data.findall(".//summary");
+				for(var bi = 0; bi < bl; bi ++){
+					bookinfo[bookinfo[bi].attrib.name] = bookinfo[bi].text;
+				}
+				var bookname = bookinfo["title"];
+				var rc = bookrc[0].text;
+				var host = req.host;
+				var book_number = 1;
+				books.hasbook(isbn, function(flag){
+					if(!flag){
+						books.add(bookname, "http://" + host + "/images/pics.png", bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, book_number, function(status, info){
+							res.redirect("/addbook?" + status + "=" + encodeURIComponent(info));
+						});
+					}else{
+						books.update(bookname, "http://" + host + "/images/pics.png", "肖著强，韩铁男，韩建敏", "中国青年出版社", "2012-12-01", rc, isbn, book_cate, book_number, function(status, info){
+							res.redirect("/updatebook?" + status + "=" + encodeURIComponent(info));
+						});
+					}
 				});
-			}else{
-				books.update(bookname, "http://" + host + "/images/pics.png", "肖著强，韩铁男，韩建敏", "中国青年出版社", "2012-12-01", rc, isbn, book_cate, book_number, function(status, info){
-					res.redirect("/updatebook?" + status + "=" + encodeURIComponent(info));
-				});
-			}
-		});
+			}, "utf8").on("error", function(err){
+				throw err;
+			});
+		}else{
+			res.redirect("/addbook?err=" + encodeURIComponent("请输入ISBN编码。"));
+		}
 	}
 }
