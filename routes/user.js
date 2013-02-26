@@ -29,7 +29,7 @@ exports.del = function(data, callback){
 exports.login = function(req, res, callback){
 	var user_info = req.cookies.user_info;
 	if (!user_info) {
-		res.redirect('http://ux.etao.net/api/ucenter/userauth.php?domain=lingwu.etao.net&url=http%3A%2F%2Flingwu.etao.net%3A8080');
+		res.redirect('http://ux.etao.net/api/ucenter/userauth.php?domain=book.etao.net&url=http%3A%2F%2Fbook.etao.net%3A8080');
 	} else {
 		var user_info_ob = JSON.parse(decodeURIComponent(user_info)).data;
 

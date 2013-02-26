@@ -143,4 +143,4 @@ exports.savebook = function(req, res){
 			res.redirect("/addbook?err=" + encodeURIComponent("图书信息不足。"));
 		}
 	}
-}
+};
