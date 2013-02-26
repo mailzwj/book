@@ -56,14 +56,18 @@ lendhistory集合用于存储用户借书/还书的整个过程，也兼任查�
 ![还书](http://img04.taobaocdn.com/tps/i4/T1I8VsXvJcXXbc8EIG-542-559.png)
 
 ###3.一些资料
-nodejs文档：<http://nodejs.org/api/>
-express文档：<http://expressjs.com/api.html>
-mongoskin教程：<http://www.hacksparrow.com/mongoskin-tutorial-with-examples.html>(目前没有完整的mongoskin文档)
-jade文档：<https://github.com/visionmedia/jade>
-markdown文档：<http://daringfireball.net/projects/markdown/syntax>
+-   nodejs文档：<http://nodejs.org/api/>
+-   express文档：<http://expressjs.com/api.html>
+-   mongoskin教程：<http://www.hacksparrow.com/mongoskin-tutorial-with-examples.html>(目前没有完整的mongoskin文档)
+-   jade文档：<https://github.com/visionmedia/jade>
+-   markdown文档：<http://daringfireball.net/projects/markdown/syntax>  
 
-以生产环境启动：
-Mac：$ export NODE_ENV=production
-windows: set NODE_ENV=production
 
-目前远程数据库使用[mongolab](https://mongolab.com/)
+以生产环境启动：  
+
+Mac：$ export NODE_ENV=production  
+
+windows: set NODE_ENV=production  
+
+
+*开发前请绑定本地host为book.etao.net*，目前远程数据库使用[mongolab](https://mongolab.com/)
