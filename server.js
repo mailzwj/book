@@ -1,7 +1,3 @@
-
-/**
- * Module dependencies.
- */
 var express = require('express')
     , cfg = require("./config")
     , routes = require('./routes')

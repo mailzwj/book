@@ -1,5 +1,5 @@
 /*
- * about books.
+ * 图书模块
  */
 
 var config = require("../config");
