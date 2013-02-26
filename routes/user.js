@@ -42,7 +42,7 @@ exports.login = function(req, res, callback){
 		};
 
 
-		coll.findOne({'work_id': user_info_ob.WorkId}, function (err, data) {
+		coll.findOne({'work_id': user_info_ob.work_id}, function (err, data) {
 			if (err) {
 				console.log(err);
 			}
