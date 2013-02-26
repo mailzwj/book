@@ -116,9 +116,10 @@ exports.savebook = function(req, res){
 	if(!users.islogin(req)){
 		res.redirect("/addbook?err=" + encodeURIComponent("添加图书前，请先登录。"));
 	}else{
-		if(req.param("isbn") && req.param("bc")){
+		if(req.param("isbn") && req.param("bc") && req.param("number")){
 			var isbn = req.param("isbn");
 			var book_cate = req.param("bc");
+			var book_number = req.param("number");
 			var req = http.request({
 				host: "api.douban.com",
 				port: 80,
@@ -147,7 +148,6 @@ exports.savebook = function(req, res){
 						bookinfo[bookinfo[bi]["@name"]] = bookinfo[bi]["$t"];
 					}
 					var bookname = bookinfo["title"];
-					var book_number = 1;
 					books.hasbook(isbn, function(flag){
 						if(!flag){
 							books.add(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, book_number, function(status, info){
@@ -163,7 +163,7 @@ exports.savebook = function(req, res){
 			});
 			req.end();
 		}else{
-			res.redirect("/addbook?err=" + encodeURIComponent("请输入ISBN编码。"));
+			res.redirect("/addbook?err=" + encodeURIComponent("图书信息不足。"));
 		}
 	}
 }
