@@ -4,7 +4,6 @@
 
 var config = require("../config");
 var db = config.db;
-// console.log(db);
 var coll = db.collection("users");
 
 // 添加
