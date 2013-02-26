@@ -48,3 +48,9 @@ lendhistory集合用于存储用户借书/还书的整个过程，也兼任查�
 |nick|isbn|bookname|borrow_time|return_time|status|book_cate|
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 |乐淘|123456789|jQuery|2013-01-01|2013-02-01|1/2/3/4|1|
+
+###4.时序图
+![添加图书](http://img01.taobaocdn.com/tps/i1/T1vG8sXzxdXXcTVusl-527-571.png)
+![删除图书](http://img03.taobaocdn.com/tps/i3/T1jGBuXwdaXXaORMIg-495-501.png)
+![借书](http://img02.taobaocdn.com/tps/i2/T1OcpuXyNXXXcNgtjD-606-872.png)
+![还书](http://img04.taobaocdn.com/tps/i4/T1I8VsXvJcXXbc8EIG-542-559.png)

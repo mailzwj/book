@@ -5,6 +5,8 @@
 var users = require('./user');
 var books = require('./book');
 
+var http = require("http");
+
 exports.login = function(req, res, next){
 	users.login(req, res, next);
 };
@@ -113,8 +115,12 @@ exports.savebook = function(req, res){
 					}
 					//console.log(data.toString("utf8"));
 					data = data.toString("utf8");
+					if(data === "bad isbn"){
+						response.redirect("/addbook?err=" + encodeURIComponent('"' + isbn + '" is a bad isbn.'));
+						return false;
+					}
 					data = JSON.parse(data);
-					console.log(data);
+					//console.log(data);
 					var bookinfo = data["db:attribute"], bl = bookinfo.length;
 					var rc = data["summary"]["$t"];
 					var links = data["link"][2]["@href"];
