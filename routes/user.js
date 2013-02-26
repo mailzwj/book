@@ -6,9 +6,9 @@ var config = require("../config");
 var db = config.db;
 var crypto = require("crypto");
 var coll = db.collection("users");
-exports.add = function(nick, username, pwd, email, callback){
-	//add user
-	coll.insert({"nick": nick, "realname": username, "password": pwd, "email": email}, function(err){
+// var lang = require('./object-util');
+exports.add = function(data, callback){
+	coll.insert({"nick": re.nick, "email": re.email, 'work_id': re.work_id, 'isadmin': re.isadmin}, function(err){
 		if(err){
 			throw err;
 		}
@@ -16,49 +16,69 @@ exports.add = function(nick, username, pwd, email, callback){
 	});
 };
 
-exports.login = function(uid, pwd, rurl, req, res){
-	if(uid && pwd){
-		coll.findOne({"$or": [{"nick": uid}, {"realname": uid}, {"email": uid}], "password": pwd}, function(err, rs){
-			if(err){
-				throw err;
-			}
-			if(rs){
-				req.session.nick = rs.nick;
-				res.redirect(rurl);
-			}else{
-				res.render("login", {title: "登录>>我的图书管理系统", page_url: rurl, err: "请检查用户名或密码是否正确。", redirect_url: "/", nick: null});
-			}
-		});
-	}else{
-		res.redirect(rurl);
-	}
-};
-
-//只允许修改密码和邮箱
-exports.update = function(pwd, email){
-	//update user
-};
-
 //根据userid删除用户
-exports.del = function(uid){
-	//delete user
+exports.del = function(data, callback){
+	coll.remove({'work_id': data.WorkId}, function (err) {
+		if (err) {
+			console.log(err);
+		}
+		callback && callback();
+	});
+};
+
+exports.login = function(req, res, callback){
+	var user_info = req.cookies.user_info;
+	if (!user_info) {
+		res.redirect('http://ux.etao.net/api/ucenter/userauth.php?domain=lingwu.etao.net&url=http%3A%2F%2Flingwu.etao.net%3A8080');
+	} else {
+		var user_info_ob = JSON.parse(decodeURIComponent(user_info)).data;
+
+		user_info_ob = {
+			nick: user_info_ob.WangWang,
+			email: user_info_ob.Email,
+			work_id: user_info_ob.WorkId
+		};
+
+		coll.find({'work_id': user_info_ob.WorkId}, function (err, data) {
+			if (err) {
+				console.log(err);
+			}
+			// 写入数据库
+			if (!data) {
+				exports.add(user_info_ob);
+			}
+			// 写入session
+			req.session.user_info_ob = user_info_ob;
+			callback && callback();
+		});
+	}
 };
 
 //判断用户是否已登录，并返回相关值
 exports.islogin = function(req){
-	//check login
-	var usession = "";
+	var nick = "";
 	if(req.session){
-		usession = req.session.nick;
+		nick = req.session.user_info_ob && req.session.user_info_ob.nick;
 	}
-	if(usession){
-		return usession;
-	}else{
-		return false;
-	}
+	return nick;
 };
 
-//判断登录用户是否管理员，并返回bool值
-exports.isadmin = function(uid){
-	//check level
+//判断登录用户是否管理员
+exports.isadmin = function(req, callback){
+	coll.findOne({work_id: req.session.user_info_ob.work_id}, function (err, data) {
+		if (err) {
+			console.log(err);
+		}
+		callback && callback(data.isadmin);
+	});
+};
+
+// 给用户授权管理员权限
+exports.grant = function (req, admin_cate, callback) {
+	coll.update({work_id: req.session.user_info_ob.work_id}, {$set: {isadmin: admin_cate}}, function (err) {
+		if (err) {
+			console.log(err);
+		}
+		callback && callback();
+	});
 };
