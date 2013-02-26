@@ -1,7 +1,7 @@
 ##图书管理系统
-###3、数据库设计
+###1、数据库设计
 本系统数据使用Nosql型数据库mongodb将数据存储于books数据库中，自PHP+Mysql之后Nodejs+Mongodb可谓是新生技术中的又一黄金搭档。本系统设计了三个集合（collection），分别是：books（存储图书相关信息）、users（存储用户相关信息）、lendhistory（存储借/还书历史）。
-#####3.1 books集合
+#####1.1 books集合
 books集合用于存储图书相关信息，其中包含以下文档（字段）：`bookname`(图书名称)、`pic`（图书缩略图）、`author`（图书作者）、`publish_house`（出版社）、`publish_date`（出版日期）、`borrow_times`（借阅次数）、`score`（总体评分）、`recommend`（推荐阅读信息）、`book_cate`（图书分类）、`isbn`（图书ISBN编码）、`book_number`（可借册数）。
 
 其中，以下文档需做特殊说明：
@@ -18,7 +18,7 @@ books集合用于存储图书相关信息，其中包含以下文档（字段）
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---|:---:|:---:|:---:|
 |PS教程|http://....png|XXX|邮电出版社|2013-01-01|推荐阅读|1|123456789|3|
 
-#####3.2 users集合
+#####1.2 users集合
 users集合数据本身不由本系统创建，该集合数据由ark登录成功后返回用户信息写入，这样可以保证登入用户都是有效的系统内部用户，避免外部用户干扰。该集合包含以下文档（字段）：`nick`（用户昵称/旺旺）、`email`（用户邮箱）、`work_id`（工号）、`isadmin`（是否管理员标记）。
 
 其中，以下文档需做特殊说明：
@@ -33,7 +33,7 @@ users集合数据本身不由本系统创建，该集合数据由ark登录成功
 |:---:|:---:|:---:|:---:|
 |乐淘|mailxxx@gmail.com|12345|0/1/2/3|
 
-#####3.3 lendhistory集合
+#####1.3 lendhistory集合
 lendhistory集合用于存储用户借书/还书的整个过程，也兼任查询借阅历史的角色，该集合包含以下文档（字段）：`nick`（用户昵称）、`isbn`（图书标识）、`bookname`（图书名称）、`borrom_time`（借阅时间）、`return_time`（规定的还书时间）、`status`（接/还书状态标识）、`book_cate`（图书类别）。
 
 其中，以下需做特殊说明：
@@ -49,8 +49,21 @@ lendhistory集合用于存储用户借书/还书的整个过程，也兼任查�
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 |乐淘|123456789|jQuery|2013-01-01|2013-02-01|1/2/3/4|1|
 
-###4.时序图
+###2.时序图
 ![添加图书](http://img01.taobaocdn.com/tps/i1/T1vG8sXzxdXXcTVusl-527-571.png)
 ![删除图书](http://img03.taobaocdn.com/tps/i3/T1jGBuXwdaXXaORMIg-495-501.png)
 ![借书](http://img02.taobaocdn.com/tps/i2/T1OcpuXyNXXXcNgtjD-606-872.png)
 ![还书](http://img04.taobaocdn.com/tps/i4/T1I8VsXvJcXXbc8EIG-542-559.png)
+
+###3.一些资料
+nodejs文档：<http://nodejs.org/api/>
+express文档：<http://expressjs.com/api.html>
+mongoskin教程：<http://www.hacksparrow.com/mongoskin-tutorial-with-examples.html>(目前没有完整的mongoskin文档)
+jade文档：<https://github.com/visionmedia/jade>
+markdown文档：<http://daringfireball.net/projects/markdown/syntax>
+
+以生产环境启动：
+Mac：$ export NODE_ENV=production
+windows: set NODE_ENV=production
+
+目前远程数据库使用[mongolab](https://mongolab.com/)
