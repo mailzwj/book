@@ -4,16 +4,16 @@
 
 var config = require("../config");
 var db = config.db;
-var crypto = require("crypto");
+// console.log(db);
 var coll = db.collection("users");
 
 // 添加
 exports.add = function(data, callback){
-	coll.insert({"nick": re.nick, "email": re.email, 'work_id': re.work_id, 'isadmin': re.isadmin}, function(err){
+	coll.insert({"nick": data.nick, "email": data.email, 'work_id': data.work_id, 'isadmin': data.isadmin}, function(err){
 		if(err){
 			throw err;
 		}
-		callback();
+		callback && callback();
 	});
 };
 
@@ -31,7 +31,7 @@ exports.del = function(data, callback){
 exports.login = function(req, res, callback){
 	var user_info = req.cookies.user_info;
 	if (!user_info) {
-		// 接入UX平台登录功能，野草在负责
+		// 接入UX平台登录功能，野草负责
 		res.redirect('http://ux.etao.net/api/ucenter/userauth.php?domain=book.etao.net&url=http%3A%2F%2Fbook.etao.net%3A' + res.app.get('port'));
 	} else {
 		var user_info_ob = JSON.parse(decodeURIComponent(user_info)).data;
@@ -42,7 +42,8 @@ exports.login = function(req, res, callback){
 			work_id: user_info_ob.WorkId
 		};
 
-		coll.find({'work_id': user_info_ob.WorkId}, function (err, data) {
+
+		coll.findOne({'work_id': user_info_ob.WorkId}, function (err, data) {
 			if (err) {
 				console.log(err);
 			}
@@ -55,6 +56,27 @@ exports.login = function(req, res, callback){
 			callback && callback();
 		});
 	}
+
+	// var user_info_ob = JSON.parse(decodeURIComponent(user_info)).data;
+
+	// 	user_info_ob = {
+	// 		nick: user_info_ob.WangWang,
+	// 		email: user_info_ob.Email,
+	// 		work_id: user_info_ob.WorkId
+	// 	};
+
+	// 	coll.find({'work_id': user_info_ob.WorkId}, function (err, data) {
+	// 		if (err) {
+	// 			console.log(err);
+	// 		}
+	// 		// 写入数据库
+	// 		if (!data) {
+	// 			exports.add(user_info_ob);
+	// 		}
+	// 		// 写入session
+	// 		req.session.user_info_ob = user_info_ob;
+	// 		callback && callback();
+	// 	});
 };
 
 //判断用户是否已登录，并返回昵称
