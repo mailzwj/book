@@ -1,10 +1,7 @@
-
 /*
- * GET home page.
+ * 路由模块
  */
-var config = require("../config");
-var crypto = require("crypto");
-var errs = config.errs;
+
 var users = require('./user');
 var books = require('./book');
 

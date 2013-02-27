@@ -1,11 +1,9 @@
 /*
- * about books.
+ * 图书模块
  */
 
 var config = require("../config");
 var db = config.db;
-var crypto = require("crypto");
-var coll = db.collection("users");
 var bcol = db.collection("books");
 var ls = db.collection("lendhistory");
 exports.add = function(bookname, pic, author, publish_house, publish_date, recommend, isbn, book_cate, book_number, callback){
