@@ -7,12 +7,13 @@ var db = config.db;
 var crypto = require("crypto");
 var coll = db.collection("users");
 // var lang = require('./object-util');
-exports.add = function(data, callback){
+exports.add = function(re, callback){
+	console.log(add);
 	coll.insert({"nick": re.nick, "email": re.email, 'work_id': re.work_id, 'isadmin': re.isadmin}, function(err){
 		if(err){
 			throw err;
 		}
-		callback();
+		callback && callback();
 	});
 };
 

@@ -142,6 +142,20 @@ exports.pushborrow = function(username, isbn, callback){
 	});
 };
 
+exports.getborrowlist = function(cate, callback){
+	ls.find({book_cate: cate.toString(), status: 1}, {sort: [["borrow_time", "desc"]]}).toArray(function(err, rs){
+		if(err){
+			callback("err", "查询列表失败。");
+		}else{
+			if(rs){
+				callback("success", rs);
+			}else{
+				callback("err", "未找到相关记录。");
+			}
+		}
+	});
+};
+
 exports.checkborrow = function(flag, username, isbn, callback){
 	//通过或拒绝的借书申请，修改借阅历史表中对应记录状态标识
 	if(flag === "pass"){
@@ -149,7 +163,7 @@ exports.checkborrow = function(flag, username, isbn, callback){
 			if(err){
 				callback("err", "用户" + username + "的借阅申请审核失败。");
 			}else{
-				callback("err", "结束成功。");
+				callback("success", "审核通过。");
 			}
 		});
 	}else if(flag === "cancel"){
@@ -161,7 +175,7 @@ exports.checkborrow = function(flag, username, isbn, callback){
 					if(err){
 						callback("err", "拒绝" + username + "的借阅申请审核失败。");
 					}else{
-						callback("err", "拒绝成功。");
+						callback("success", "拒绝成功。");
 					}
 				});
 			}

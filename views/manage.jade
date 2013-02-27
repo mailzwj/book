@@ -1,0 +1,14 @@
+extends layout
+
+block content
+	- if(err)
+		div.alert.alert-error= err
+	- if(success)
+		div.alert.alert-info= success
+	div.borrow-main
+		ul.borrow-list
+			- if(list)
+			- for ls in list
+				li.item #{ls.username}&nbsp;&nbsp;#{ls.bookname}&nbsp;&nbsp;
+				| <a href="/check_borrow?act=pass&isbn=#{ls.isbn}&user=#{ls.username}">通过</a>&nbsp;&nbsp;
+				| <a href="/check_borrow?act=cancel&isbn=#{ls.isbn}&user=#{ls.username}">拒绝</a>

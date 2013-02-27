@@ -15,16 +15,23 @@ exports.login = function(req, res, next){
 };
 
 exports.index = function(req, res){
-
+	var err = req.param("err");
+	var suc = req.param("success");
 	var kw = req.param("s");
 	var page = req.param("page") ? req.param("page") : 1;
 	var list_num = 10;
 	if(!kw){
 		kw = "";
 	}
-	var data = {title: "我的图书管理系统", page_url: req.url.replace(/\?.*$/g, ""), kw: kw, err: null, list: [], nick: null};
+	var data = {title: "我的图书管理系统", page_url: req.url.replace(/\?.*$/g, ""), kw: kw, err: null, success: null, list: [], nick: null};
 	if(users.islogin(req)){
 		data.nick = users.islogin(req);
+	}
+	if(err){
+		data.err = err;
+	}
+	if(suc){
+		data.success = suc;
 	}
 	books.getbooklist(kw, (page - 1) * list_num, list_num, function(rs){
 		if(rs === "error"){
@@ -148,5 +155,58 @@ exports.savebook = function(req, res){
 		}else{
 			res.redirect("/addbook?err=" + encodeURIComponent("图书信息不足。"));
 		}
+	}
+};
+
+exports.apply = function(req, res){
+	var url = req.url;
+	var isbn = req.param("isbn");
+	if(isbn){
+		books.pushborrow(req.session.user_info_ob.nick, isbn, function(status, info){
+			res.redirect("/?" + status + "=" + encodeURIComponent(info));
+		});
+	}else{
+		res.redirect("/?err=" + encodeURIComponent("非法链接。"));
+	}
+};
+
+
+exports.manage = function(req, res){
+	var data = {title: "审核借阅申请列表", list: [], err: null, success: null, page_url: req.url, nick: null};
+	if(users.islogin(req)){
+		data.nick = req.session.user_info_ob.nick;
+	}
+	if(req.param("err")){
+		data.err = req.param("err");
+	}
+	if(req.param("success")){
+		data.success = req.param("success");
+	}
+	users.isadmin(req, function(man){
+		if(man !== 0){
+			books.getborrowlist(man, function(status, info){
+				if(status === "err"){
+					data.err = info;
+				}else if(status === "success"){
+					data.list = info;
+				}
+				res.render("manage", data);
+			});
+		}else{
+			res.render("manage", data);
+		}
+	});
+};
+
+exports.checkborrow = function(req, res){
+	var flag = req.param("act");
+	var isbn = req.param("isbn");
+	var user = req.param("user");
+	if(flag && isbn && user){
+		books.checkborrow(flag, user, isbn, function(status, info){
+			res.redirect("/manage?" + status + "=" + encodeURIComponent(info));
+		});
+	}else{
+		res.redirect("/manage?err=" + encodeURIComponent("参数错误。"));
 	}
 };

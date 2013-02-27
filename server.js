@@ -34,6 +34,9 @@ app.all('/', routes.index);
 app.all('/addbook', routes.addbook);
 app.all('/savebook', routes.savebook);
 app.all('/updatebook', routes.updatebook);
+app.all("/apply/:isbn", routes.apply);
+app.all("/manage", routes.manage);
+app.all("/check_borrow", routes.checkborrow);
 http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
 });
