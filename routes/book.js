@@ -184,7 +184,7 @@ exports.checkborrow = function(flag, id, isbn, callback){
 			}
 		});
 	}else if(flag === "cancel"){
-		ls.update({_id: ls.id(id)}, {"$set": {status: 4}}, function(err){
+		ls.update({_id: ls.id(id)}, {"$set": {status: 5}}, function(err){
 			if(err){
 				callback("err", "拒绝" + username + "的借阅申请审核失败。");
 			}else{
