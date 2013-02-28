@@ -192,7 +192,7 @@ exports.getmyborrow = function(username, callback){
 exports.checkborrow = function(flag, id, isbn, callback){
 	//通过或拒绝的借书申请，修改借阅历史表中对应记录状态标识
 	if(flag === "pass"){
-		ls.update({_id: ls.id(id)}, {"$set": {status: 2}}, function(err){
+		ls.update({_id: ls.id(id)}, {"$set": {status: 3}}, function(err){
 			if(err){
 				callback("err", "用户" + username + "的借阅申请审核失败。");
 			}else{
@@ -200,7 +200,7 @@ exports.checkborrow = function(flag, id, isbn, callback){
 			}
 		});
 	}else if(flag === "cancel"){
-		ls.update({_id: ls.id(id)}, {"$set": {status: 5}}, function(err){
+		ls.update({_id: ls.id(id)}, {"$set": {status: 2}}, function(err){
 			if(err){
 				callback("err", "拒绝" + username + "的借阅申请审核失败。");
 			}else{
@@ -216,7 +216,7 @@ exports.checkborrow = function(flag, id, isbn, callback){
 	}
 };
 
-exports.pushreturn = function(id, callback){
+/*exports.pushreturn = function(id, callback){
 	//修改借阅历史表的还书申请状态
 	ls.update({_id: ls.id(id)}, {"$set": {status: 3}}, function(err){
 		if(err){
@@ -225,31 +225,37 @@ exports.pushreturn = function(id, callback){
 			callback("success", "还书申请发送成功，请到管理员处还书。");
 		}
 	});
+};*/
+
+exports.checkreturn = function(id, isbn, callback){
+	//通过或拒绝的还书申请，修改借阅历史表中对应记录状态标识
+	ls.update({_id: ls.id(id)}, {"$set": {status: 4, return_time: new Date()}}, function(err){
+		if(err){
+			callback("err", "还书失败。");
+		}else{
+			bcol.update({isbn: isbn}, {"$inc": {book_borrowed: -1}}, function(err){
+				if(err){
+					callback("err", "还书失败。");
+				}else{
+					callback("success", "还书成功。");
+				}
+			});
+		}
+	});
 };
 
-exports.checkreturn = function(flag, id, isbn, callback){
-	//通过或拒绝的还书申请，修改借阅历史表中对应记录状态标识
-	if(flag === "pass"){
-		ls.update({_id: ls.id(id)}, {"$set": {status: 4, return_time: new Date()}}, function(err){
-			if(err){
-				callback("err", "用户" + username + "的还书申请审核失败。");
-			}else{
-				bcol.update({isbn: isbn}, {"$inc": {book_borrowed: -1}}, function(err){
-					if(err){
-						callback("err", "用户" + username + "的还书申请审核失败。");
-					}else{
-						callback("success", "还书成功。");
-					}
-				});
-			}
-		});
-	}else if(flag === "cancel"){
-		ls.update({_id: ls.id(id)}, {"$set": {status: 2}}, function(err){
-			if(err){
-				callback("err", "取消" + username + "的还书申请失败。");
-			}else{
-				callback("success", "取消申请成功。");
-			}
-		});
-	}
+exports.cancelborrow = function(id, isbn, callback){
+	ls.update({_id: ls.id(id)}, {"$set": {status: 5, return_time: new Date()}}, function(err){
+		if(err){
+			callback("err", "取消失败，请重新尝试。");
+		}else{
+			bcol.update({isbn: isbn}, {"$inc": {book_borrowed: -1}}, function(err){
+				if(err){
+					callback("err", "取消失败，请重新尝试。");
+				}else{
+					callback("success", "借书申请已取消。");
+				}
+			});
+		}
+	});
 };
