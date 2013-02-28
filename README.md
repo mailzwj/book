@@ -78,6 +78,7 @@ lendhistory集合用于存储用户借书/还书的整个过程，也兼任查�
 -   mongoskin教程：<http://www.hacksparrow.com/mongoskin-tutorial-with-examples.html>(目前没有完整的mongoskin文档)
 -   jade文档：<https://github.com/visionmedia/jade>
 -   markdown文档：<http://daringfireball.net/projects/markdown/syntax>  
+-   使用nodejs和mongodb开发WebApp Nodepad：<http://dailyjs.com/tags.html#lmawa>
 
 
 以生产环境启动：  

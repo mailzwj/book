@@ -1,7 +1,8 @@
 var express = require('express')
     , cfg = require("./config")
     , http = require('http')
-    , path = require('path');
+    , path = require('path')
+    , MongoStore = require('connect-mongo')(express);
 
 var app = express();
 
@@ -27,7 +28,12 @@ app.configure(function(){
     app.use(express.logger('dev'));
     app.use(express.bodyParser());
     app.use(express.cookieParser());
-    app.use(express.session({secret: "keyboard cat", maxAge: 12000}));
+    app.use(express.session({
+        secret: "keyboard cat",
+        store: new MongoStore({
+          url: cfg.dburl
+        })
+    }));
     app.use(express.methodOverride());
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));
