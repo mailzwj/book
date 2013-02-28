@@ -33,12 +33,20 @@ app.configure(function(){
     app.use(express.static(path.join(__dirname, 'public')));
 });
 
-
 var routes = require('./routes');
 app.all('/', routes.login, routes.index);
 app.all('/addbook', routes.login, routes.addbook);
 app.all('/savebook', routes.login, routes.savebook);
 app.all('/updatebook', routes.login, routes.updatebook);
+app.all("/apply/:isbn", routes.login, routes.apply);
+app.all("/manage", routes.login, routes.manage);
+app.all("/check_borrow", routes.login, routes.checkborrow);
+app.all("/myborrow", routes.login, routes.myborrow);
+app.all("/cancelborrow", routes.login, routes.cancelborrow);
+//app.all("/pushreturn", routes.login, routes.pushreturn);
+//app.all("/returnapply", routes.login, routes.returnapply);
+app.all("/returnbook", routes.login, routes.returnbook);
+app.all("/check_return", routes.login, routes.checkreturn);
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));

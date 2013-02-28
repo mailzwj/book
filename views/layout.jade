@@ -17,18 +17,11 @@ html
 					div.about-user
 						- if(nick)
 							div.yahei.user-action
-								a.user-nick(href="#") #{nick}
+								a.user-nick(href="/userinfo") #{nick}
 									i.icons.icon-hassub
 								ul.act-list
 									li.item
-										a(href="/userinfo/#{nick}") 个人信息
-									li.item
-										a(href="/logout?redirect_url=#{page_url}") 退出
-						- else
-							div.yahei.login-out
-								a(href="/login?redirect_url=#{page_url}") 登录
-								&nbsp;|&nbsp;
-								a(href="#") 注册
+										a(href="/myborrow") 我的借阅
 			div.banner
 				div.container
 					div.banner-switch
@@ -47,5 +40,7 @@ html
 			div.yahei.footer
 				div.container
 					&copy; UX
-					| <a href="/addbook">添加图书</a>
+					| <a href="/addbook">添加图书</a>&nbsp;&nbsp;
+					| <a href="/manage">管理借阅</a>&nbsp;&nbsp;
+					| <a href="/returnbook">管理还书</a>
 		script(src="/javascripts/library.js")

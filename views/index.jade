@@ -3,6 +3,8 @@ extends layout
 block content
 	- if(err)
 		div.alert.alert-error= err
+	- if(success)
+		div.alert.alert-info= success
 	div.pull-left.mainbox
 		div.search
 			form.form-search(action="/", method="get")
@@ -51,7 +53,7 @@ block content
 									td 借阅次数：#{rs.borrow_times}次
 								tr
 									td ＩＳＢＮ：#{rs.isbn}
-									td 总体评价：#{rs.score}分
+									td 可借册数：#{rs.book_number}册
 							p.yahei.text-tit
 								推荐阅读
 							div.list-text #{rs.recommend}

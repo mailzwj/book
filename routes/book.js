@@ -6,7 +6,23 @@ var config = require("../config");
 var db = config.db;
 var bcol = db.collection("books");
 var ls = db.collection("lendhistory");
-exports.add = function(bookname, pic, author, publish_house, publish_date, recommend, isbn, book_cate, book_number, callback){
+
+exports.formatDate = function(date, style){  
+	var y = date.getFullYear();    
+	var M = "0" + (date.getMonth() + 1);    
+	M = M.substring(M.length - 2);   
+	var d = "0" + date.getDate();   
+	d = d.substring(d.length - 2);    
+	var h = "0" + date.getHours();    
+	h = h.substring(h.length - 2);    
+	var m = "0" + date.getMinutes();    
+	m = m.substring(m.length - 2);   
+	var s = "0" + date.getSeconds();    
+	s = s.substring(s.length - 2);   
+	return style.replace('yyyy', y).replace('mm', M).replace('dd', d).replace('hh', h).replace('ii', m).replace('ss', s);
+};
+
+exports.add = function(bookname, pic, author, publish_house, publish_date, recommend, isbn, book_cate, book_borrowed, book_total, callback){
 	//add book
 	if(bookname && book_cate && isbn){
 		var pic = pic ? pic : "",
@@ -15,7 +31,7 @@ exports.add = function(bookname, pic, author, publish_house, publish_date, recom
 			publish_date = publish_date ? publish_date : "",
 			recomend = recomend ? recomend : "暂无推荐信息",
 			book_number = book_number >= 0 ? book_number : 0;
-		bcol.insert({bookname: bookname, pic: pic, author: author, publish_house: publish_house, publish_date: publish_date, borrow_times: 0, score: 0, isbn: isbn, recommend: recommend, book_cate: book_cate, book_number: book_number}, function(err){
+		bcol.insert({bookname: bookname, pic: pic, author: author, publish_house: publish_house, publish_date: publish_date, borrow_times: 0, score: 0, isbn: isbn, recommend: recommend, book_cate: book_cate, book_borrowed: book_borrowed, book_total: book_total}, function(err){
 			if(err){
 				//throw err;
 				//res.redirect("/addbook?err=图书信息保存失败，请重新添加。");
@@ -58,7 +74,7 @@ exports.getbooklist = function(kw, start, len, callback){
 };
 
 //修改书籍信息
-exports.update = function(bookname, pic, author, publish_house, publish_date, recommend, isbn, book_cate, book_number, callback){
+exports.update = function(bookname, pic, author, publish_house, publish_date, recommend, isbn, book_cate, book_borrowed, book_total, callback){
 	//update book
 	if(bookname && book_cate && isbn){
 		var pic = pic ? pic : "",
@@ -67,7 +83,7 @@ exports.update = function(bookname, pic, author, publish_house, publish_date, re
 			publish_date = publish_date ? publish_date : "",
 			recomend = recomend ? recomend : "暂无推荐信息",
 			book_number = book_number >= 0 ? book_number : 0;
-		bcol.update({isbn: isbn}, {"$set": {bookname: bookname, pic: pic, author: author, publish_house: publish_house, publish_date: publish_date, borrow_times: 0, score: 0, recommend: recommend, book_cate: book_cate, book_number: book_number}}, function(err){
+		bcol.update({isbn: isbn}, {"$set": {bookname: bookname, pic: pic, author: author, publish_house: publish_house, publish_date: publish_date, borrow_times: 0, score: 0, recommend: recommend, book_cate: book_cate, book_borrowed: book_borrowed, book_total: book_total}}, function(err){
 			if(err){
 				//throw err;
 				//res.redirect("/addbook?err=图书信息保存失败，请重新添加。");
@@ -103,7 +119,7 @@ exports.canborrow = function(isbn, callback){
 			//throw err;
 			callback(false);
 		}else{
-			if(book && book.book_number > 0){
+			if(book && (book.book_total - book_borrowed) > 0){
 				callback(true);
 			}else{
 				callback(false);
@@ -114,12 +130,12 @@ exports.canborrow = function(isbn, callback){
 
 exports.pushborrow = function(username, isbn, callback){
 	//将申请放入借书申请列表
-	bcol.findOne({isbn: isbn, book_number: {"$gt": 0}}, function(err, book){
+	bcol.findOne({isbn: isbn}, function(err, book){
 		if(err){
 			callback("err", "未知错误。");
 		}else{
-			if(book){
-				bcol.update({isbn: isbn}, {"$inc": {book_number: -1}}, function(err){
+			if(book && (book.book_total - book.book_borrowed > 0)){
+				bcol.update({isbn: isbn}, {"$inc": {book_borrowed: 1}}, function(err){
 					if(err){
 						callback("err", "借书申请发送失败，请重新尝试。");
 					}else{
@@ -140,26 +156,59 @@ exports.pushborrow = function(username, isbn, callback){
 	});
 };
 
-exports.checkborrow = function(flag, username, isbn, callback){
+exports.getborrowlist = function(cate, status, callback){
+	var findcon = {status: status};
+	if(typeof cate === "number"){
+		findcon.book_cate = cate;
+	}
+
+	ls.find(findcon, {sort: [["borrow_time", "desc"]]}).toArray(function(err, rs){
+		if(err){
+			callback("err", "查询列表失败。");
+		}else{
+			if(rs){
+				callback("success", rs);
+			}else{
+				callback("err", "未找到相关记录。");
+			}
+		}
+	});
+};
+
+exports.getmyborrow = function(username, callback){
+	ls.find({username: username}, {sort: [["borrow_time", "desc"]]}).toArray(function(err, rs){
+		if(err){
+			callback("err", "查询历史记录失败。");
+		}else{
+			if(rs){
+				callback("success", rs);
+			}else{
+				callback("err", "未找到相关记录。");
+			}
+		}
+	});
+};
+
+exports.checkborrow = function(flag, id, isbn, callback){
 	//通过或拒绝的借书申请，修改借阅历史表中对应记录状态标识
 	if(flag === "pass"){
-		ls.update({username: username, isbn: isbn, status: 1}, {"$set": {status: 2}}, function(err){
+		ls.update({_id: ls.id(id)}, {"$set": {status: 3}}, function(err){
 			if(err){
-				callback("err", "用户" + username + "的借阅申请审核失败。");
+				callback("err", "用户借阅申请审核失败。");
 			}else{
-				callback("err", "结束成功。");
+				callback("success", "审核通过。");
 			}
 		});
 	}else if(flag === "cancel"){
-		ls.update({username: username, isbn: isbn, status: 1}, {"$set": {status: 4}}, function(err){
+		ls.update({_id: ls.id(id)}, {"$set": {status: 4}}, function(err){
 			if(err){
-				callback("err", "拒绝" + username + "的借阅申请审核失败。");
+				callback("err", "拒绝借阅申请审核失败。");
 			}else{
-				bcol.update({isbn: isbn}, {"$inc": {book_number: 1}}, function(err){
+				bcol.update({isbn: isbn}, {"$inc": {book_borrowed: -1}}, function(err){
 					if(err){
-						callback("err", "拒绝" + username + "的借阅申请审核失败。");
+						callback("err", "拒绝借阅申请审核失败。");
 					}else{
-						callback("err", "拒绝成功。");
+						callback("success", "拒绝成功。");
 					}
 				});
 			}
@@ -167,40 +216,46 @@ exports.checkborrow = function(flag, username, isbn, callback){
 	}
 };
 
-exports.pushreturn = function(username, isbn, callback){
+/*exports.pushreturn = function(id, callback){
 	//修改借阅历史表的还书申请状态
-	ls.update({username: username, isbn: isbn, status: 2}, {"$set": {status: 3}}, function(err){
+	ls.update({_id: ls.id(id)}, {"$set": {status: 3}}, function(err){
 		if(err){
 			callback("err", "还书申请发送失败，请重新发送。");
 		}else{
 			callback("success", "还书申请发送成功，请到管理员处还书。");
 		}
 	});
+};*/
+
+exports.checkreturn = function(id, isbn, callback){
+	//通过或拒绝的还书申请，修改借阅历史表中对应记录状态标识
+	ls.update({_id: ls.id(id)}, {"$set": {status: 5, return_time: new Date()}}, function(err){
+		if(err){
+			callback("err", "还书失败。");
+		}else{
+			bcol.update({isbn: isbn}, {"$inc": {book_borrowed: -1}}, function(err){
+				if(err){
+					callback("err", "还书失败。");
+				}else{
+					callback("success", "还书成功。");
+				}
+			});
+		}
+	});
 };
 
-exports.checkreturn = function(flag, username, isbn, callback){
-	//通过或拒绝的还书申请，修改借阅历史表中对应记录状态标识
-	if(flag === "pass"){
-		ls.update({username: username, isbn: isbn, status: 3}, {"$set": {status: 4}}, function(err){
-			if(err){
-				callback("err", "用户" + username + "的还书申请审核失败。");
-			}else{
-				bcol.update({isbn: isbn}, {"$inc": {book_number: 1}}, function(err){
-					if(err){
-						callback("err", "用户" + username + "的还书申请审核失败。");
-					}else{
-						callback("err", "还书成功。");
-					}
-				});
-			}
-		});
-	}else if(flag === "cancel"){
-		ls.update({username: username, isbn: isbn, status: 3}, {"$set": {status: 2}}, function(err){
-			if(err){
-				callback("err", "取消" + username + "的还书申请失败。");
-			}else{
-				callback("success", "取消申请成功。");
-			}
-		});
-	}
+exports.cancelborrow = function(id, isbn, callback){
+	ls.update({_id: ls.id(id)}, {"$set": {status: 2, return_time: new Date()}}, function(err){
+		if(err){
+			callback("err", "取消失败，请重新尝试。");
+		}else{
+			bcol.update({isbn: isbn}, {"$inc": {book_borrowed: -1}}, function(err){
+				if(err){
+					callback("err", "取消失败，请重新尝试。");
+				}else{
+					callback("success", "借书申请已取消。");
+				}
+			});
+		}
+	});
 };
