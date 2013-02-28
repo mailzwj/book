@@ -9,7 +9,7 @@ block content
 		ul.borrow-list
 			- if(list)
 			- for ls in list
-				li.item #{ls.bookname}
+				li.item #{ls.bookname}&nbsp;&nbsp;#{ls.borrow_time}&nbsp;&nbsp;#{ls.return_time}
 					- if(ls.status === 2) 
 						| &nbsp;&nbsp;<span class="status-info">正在阅读，</span><a href="/pushreturn?id=#{ls._id}">申请还书</a>
 					- else if(ls.status === 1)

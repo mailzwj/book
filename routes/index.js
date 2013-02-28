@@ -186,6 +186,10 @@ exports.myborrow = function(req, res){
 		if(status === "err"){
 			data.err = info;
 		}else if(status === "success"){
+			for(var i = 0; i < info.length; i++){
+				info[i].borrow_time = books.formatDate(info[i].borrow_time, "yyyy-mm-dd hh:ii:ss");
+				info[i].return_time = books.formatDate(info[i].return_time, "yyyy-mm-dd hh:ii:ss");
+			}
 			data.list = info;
 		}
 		res.render("myborrow", data);

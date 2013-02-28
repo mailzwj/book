@@ -6,6 +6,22 @@ var config = require("../config");
 var db = config.db;
 var bcol = db.collection("books");
 var ls = db.collection("lendhistory");
+
+exports.formatDate = function(date, style){  
+	var y = date.getFullYear();    
+	var M = "0" + (date.getMonth() + 1);    
+	M = M.substring(M.length - 2);   
+	var d = "0" + date.getDate();   
+	d = d.substring(d.length - 2);    
+	var h = "0" + date.getHours();    
+	h = h.substring(h.length - 2);    
+	var m = "0" + date.getMinutes();    
+	m = m.substring(m.length - 2);   
+	var s = "0" + date.getSeconds();    
+	s = s.substring(s.length - 2);   
+	return style.replace('yyyy', y).replace('mm', M).replace('dd', d).replace('hh', h).replace('ii', m).replace('ss', s);
+};
+
 exports.add = function(bookname, pic, author, publish_house, publish_date, recommend, isbn, book_cate, book_borrowed, book_total, callback){
 	//add book
 	if(bookname && book_cate && isbn){
@@ -214,7 +230,7 @@ exports.pushreturn = function(id, callback){
 exports.checkreturn = function(flag, id, isbn, callback){
 	//通过或拒绝的还书申请，修改借阅历史表中对应记录状态标识
 	if(flag === "pass"){
-		ls.update({_id: ls.id(id)}, {"$set": {status: 4}}, function(err){
+		ls.update({_id: ls.id(id)}, {"$set": {status: 4, return_time: new Date()}}, function(err){
 			if(err){
 				callback("err", "用户" + username + "的还书申请审核失败。");
 			}else{
