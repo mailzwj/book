@@ -140,10 +140,29 @@ exports.pushborrow = function(username, isbn, callback){
 	});
 };
 
-exports.getborrowlist = function(cate, callback){
-	ls.find({book_cate: cate.toString(), status: 1}, {sort: [["borrow_time", "desc"]]}).toArray(function(err, rs){
+exports.getborrowlist = function(cate, status, callback){
+	var findcon = {status: status};
+	if(typeof cate === "number"){
+		findcon.book_cate = cate;
+	}
+
+	ls.find(findcon, {sort: [["borrow_time", "desc"]]}).toArray(function(err, rs){
 		if(err){
 			callback("err", "查询列表失败。");
+		}else{
+			if(rs){
+				callback("success", rs);
+			}else{
+				callback("err", "未找到相关记录。");
+			}
+		}
+	});
+};
+
+exports.getmyborrow = function(username, callback){
+	ls.find({username: username}, {sort: [["borrow_time", "desc"]]}).toArray(function(err, rs){
+		if(err){
+			callback("err", "查询历史记录失败。");
 		}else{
 			if(rs){
 				callback("success", rs);
@@ -203,7 +222,7 @@ exports.checkreturn = function(flag, username, isbn, callback){
 					if(err){
 						callback("err", "用户" + username + "的还书申请审核失败。");
 					}else{
-						callback("err", "还书成功。");
+						callback("success", "还书成功。");
 					}
 				});
 			}

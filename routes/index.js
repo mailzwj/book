@@ -101,8 +101,8 @@ exports.savebook = function(req, res){
 	}else{
 		if(req.param("isbn") && req.param("bc") && req.param("number")){
 			var isbn = req.param("isbn");
-			var book_cate = req.param("bc");
-			var book_number = req.param("number");
+			var book_cate = parseInt(req.param("bc"));
+			var book_number = parseInt(req.param("number"));
 			var req = http.request({
 				host: "api.douban.com",
 				port: 80,
@@ -181,7 +181,7 @@ exports.manage = function(req, res){
 	}
 	users.isadmin(req, function(man){
 		if(man !== 0){
-			books.getborrowlist(man, function(status, info){
+			books.getborrowlist(man, 1, function(status, info){
 				if(status === "err"){
 					data.err = info;
 				}else if(status === "success"){
@@ -195,12 +195,84 @@ exports.manage = function(req, res){
 	});
 };
 
+exports.myborrow = function(req, res){
+	var data = {title: "我的借阅历史", list: [], err: null, success: null, page_url: req.url, nick: null};
+	if(users.islogin(req)){
+		data.nick = req.session.user_info_ob.nick;
+	}
+	if(req.param("err")){
+		data.err = req.param("err");
+	}
+	if(req.param("success")){
+		data.success = req.param("success");
+	}
+	books.getmyborrow(data.nick, function(status, info){
+		if(status === "err"){
+			data.err = info;
+		}else if(status === "success"){
+			data.list = info;
+		}
+		res.render("myborrow", data);
+	});
+};
+
+exports.pushreturn = function(req, res){
+	var isbn = req.param("isbn");
+	if(isbn){
+		books.pushreturn(req.session.user_info_ob.nick, isbn, function(status, info){
+			res.redirect("/myborrow?" + status + "=" + encodeURIComponent(info));
+		});
+	}else{
+		res.redirect("/myborrow?err=" + encodeURIComponent("参数错误。"));
+	}
+};
+
+exports.returnapply = function(req, res){
+	var data = {title: "审核还书申请列表", list: [], err: null, success: null, page_url: req.url, nick: null};
+	if(users.islogin(req)){
+		data.nick = req.session.user_info_ob.nick;
+	}
+	if(req.param("err")){
+		data.err = req.param("err");
+	}
+	if(req.param("success")){
+		data.success = req.param("success");
+	}
+	users.isadmin(req, function(man){
+		if(man !== 0){
+			books.getborrowlist(man, 3, function(status, info){
+				if(status === "err"){
+					data.err = info;
+				}else if(status === "success"){
+					data.list = info;
+				}
+				res.render("returnapply", data);
+			});
+		}else{
+			res.render("returnapply", data);
+		}
+	});
+};
+
 exports.checkborrow = function(req, res){
 	var flag = req.param("act");
 	var isbn = req.param("isbn");
-	var user = req.param("user");
+	var user = req.session.user_info_ob.nick;
 	if(flag && isbn && user){
 		books.checkborrow(flag, user, isbn, function(status, info){
+			res.redirect("/manage?" + status + "=" + encodeURIComponent(info));
+		});
+	}else{
+		res.redirect("/manage?err=" + encodeURIComponent("参数错误。"));
+	}
+};
+
+exports.checkreturn = function(req, res){
+	var flag = req.param("act");
+	var isbn = req.param("isbn");
+	var user = req.session.user_info_ob.nick;
+	if(flag && isbn && user){
+		books.checkreturn(flag, user, isbn, function(status, info){
 			res.redirect("/manage?" + status + "=" + encodeURIComponent(info));
 		});
 	}else{

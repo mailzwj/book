@@ -1,0 +1,14 @@
+extends layout
+
+block content
+	- if(err)
+		div.alert.alert-error= err
+	- if(success)
+		div.alert.alert-info= success
+	div.borrow-main
+		ul.borrow-list
+			- if(list)
+			- for ls in list
+				li.item #{ls.bookname}
+					- if(ls.status === 2) 
+						| &nbsp;&nbsp;<a href="/pushreturn?isbn=#{ls.isbn}">申请还书</a>
