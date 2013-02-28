@@ -135,7 +135,7 @@ exports.pushborrow = function(username, isbn, callback){
 			callback("err", "未知错误。");
 		}else{
 			if(book && (book.book_total - book.book_borrowed > 0)){
-				bcol.update({isbn: isbn}, {"$inc": {book_borrowed: 1}}, function(err){
+				bcol.update({isbn: isbn}, {"$inc": {book_borrowed: 1, borrow_times: 1}}, function(err){
 					if(err){
 						callback("err", "借书申请发送失败，请重新尝试。");
 					}else{
