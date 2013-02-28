@@ -6,10 +6,10 @@ books集合用于存储图书相关信息，其中包含以下文档（字段）
 
 其中，以下文档需做特殊说明：
 
-- `bookname`、`book_cate`、`isbn`、`book_number`为必填字段；
+- `bookname`、`book_cate`、`isbn`、`book_total`为必填字段；
 - `borrow_times`是非固定字段，可以在图书第一次被借阅时加入集合；
 - `book_cate`字段非常关键，将用于与管理员关联，以便管理员按类别分类管理图书增删及借换情况；
-- `book_number`字段除了记录图书可借册数外，还用于判断图书状态是否可借；
+- `book_total`、`book_borrowed`分别记录总数和已借出数量，同时可用于计算可借数量；
 - `isbn`字段用于图书去重；
 
 表格(省去可扩展字段)展示形式如下：
