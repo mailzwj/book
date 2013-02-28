@@ -50,13 +50,14 @@ lendhistory集合用于存储用户借书/还书的整个过程，也兼任查�
 |乐淘|123456789|jQuery|2013-01-01|2013-02-01|1/2/3/4|1|
 
 ###2.时序图
-![添加图书](http://img01.taobaocdn.com/tps/i1/T1vG8sXzxdXXcTVusl-527-571.png)
-![编辑图书](http://img03.taobaocdn.com/tps/i3/T1kShuXtpdXXawGwAd-598-323.png)
-![删除图书](http://img03.taobaocdn.com/tps/i3/T1jGBuXwdaXXaORMIg-495-501.png)
-![借书](http://img02.taobaocdn.com/tps/i2/T1OcpuXyNXXXcNgtjD-606-872.png)
-![还书](http://img04.taobaocdn.com/tps/i4/T1I8VsXvJcXXbc8EIG-542-559.png)
-
-###3.一些资料
+![添加图书](http://img03.taobaocdn.com/tps/i3/T1QedwXApXXXX.6wL7-517-544.png)
+![编辑图书](http://img02.taobaocdn.com/tps/i2/T1jv4uXw0fXXacMbYy-604-329.png)
+![删除图书](http://img01.taobaocdn.com/tps/i1/T1nuVvXw0bXXbrPcwX-492-404.png)
+![借书](http://img04.taobaocdn.com/tps/i4/T1a_8tXsJdXXXJI_zZ-591-864.png)
+![还书](http://img03.taobaocdn.com/tps/i3/T13PNvXB4aXXc6mJgV-551-257.png)
+###3.状态图
+![状态图](http://img02.taobaocdn.com/tps/i2/T1_j0uXuheXXXU7b60-514-374.png)
+###4.一些资料
 -   nodejs文档：<http://nodejs.org/api/>
 -   express文档：<http://expressjs.com/api.html>
 -   mongoskin教程：<http://www.hacksparrow.com/mongoskin-tutorial-with-examples.html>(目前没有完整的mongoskin文档)
