@@ -21,7 +21,9 @@ html
 									i.icons.icon-hassub
 								ul.act-list
 									li.item
-										a(href="/userinfo/#{nick}") 个人信息
+										a(href="/userinfo") 个人信息
+									li.item
+										a(href="/myborrow") 我的借阅
 									li.item
 										a(href="/logout?redirect_url=#{page_url}") 退出
 						- else
@@ -48,5 +50,6 @@ html
 				div.container
 					&copy; UX
 					| <a href="/addbook">添加图书</a>&nbsp;&nbsp;
-					| <a href="/manage">管理借阅</a>
+					| <a href="/manage">管理借阅</a>&nbsp;&nbsp;
+					| <a href="/returnapply">管理还书</a>
 		script(src="/javascripts/library.js")
