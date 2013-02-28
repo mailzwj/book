@@ -10,7 +10,6 @@ var http = require("http");
 exports.login = function(req, res, next){
 	users.login(req, res, next);
 };
-
 exports.index = function(req, res){
 	var err = req.param("err");
 	var suc = req.param("success");
@@ -36,10 +35,10 @@ exports.index = function(req, res){
 		}else{
 			var len = rs.length;
 			for(var i = 0; i < len; i++){
-				//console.log(rs[i].recommend.length);
 				if(rs[i].recommend.length > 120){
 					rs[i].recommend = rs[i].recommend.substr(0, 120) + "......";
 				}
+				rs[i].book_number = rs[i].book_total - rs[i].book_borrowed;
 			}
 			data.list = rs;
 		}
@@ -47,23 +46,6 @@ exports.index = function(req, res){
 	});
 	
 };
-// exports.add = function(req, res){
-// 	var unick = "乐淘一少";
-// 	var uname = "郑武江";
-// 	var upwd = "123456";
-// 	var uemail = "mailzwj@126.com";
-// 	var md5 = crypto.createHash("md5");
-// 	md5.update(upwd);
-// 	upwd = md5.digest("hex");
-// 	users.add(unick, uname, upwd, uemail, function(){
-// 		res.redirect("/");
-// 	});
-// };
-
-// exports.logout = function(req, res){
-// 	req.session.nick = null;
-// 	res.redirect(req.param("redirect_url"));
-// };
 exports.addbook = function(req, res){
 	var err = req.param("err");
 	var suc = req.param("success");
@@ -120,14 +102,12 @@ exports.savebook = function(req, res){
 						buf[i].copy(data, pos);
 						pos += buf[i].length;
 					}
-					//console.log(data.toString("utf8"));
 					data = data.toString("utf8");
 					if(data === "bad isbn"){
 						response.redirect("/addbook?err=" + encodeURIComponent('"' + isbn + '" is a bad isbn.'));
 						return false;
 					}
 					data = JSON.parse(data);
-					//console.log(data);
 					var bookinfo = data["db:attribute"], bl = bookinfo.length;
 					var rc = data["summary"]["$t"];
 					var links = data["link"][2]["@href"];
@@ -137,11 +117,11 @@ exports.savebook = function(req, res){
 					var bookname = bookinfo["title"];
 					books.hasbook(isbn, function(flag){
 						if(!flag){
-							books.add(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, book_number, function(status, info){
+							books.add(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, 0, book_number, function(status, info){
 								response.redirect("/addbook?" + status + "=" + encodeURIComponent(info));
 							});
 						}else{
-							books.update(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, book_number, function(status, info){
+							books.update(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, 0, book_number, function(status, info){
 								response.redirect("/updatebook?" + status + "=" + encodeURIComponent(info));
 							});
 						}
@@ -154,7 +134,6 @@ exports.savebook = function(req, res){
 		}
 	}
 };
-
 exports.apply = function(req, res){
 	var url = req.url;
 	var isbn = req.param("isbn");
@@ -166,8 +145,6 @@ exports.apply = function(req, res){
 		res.redirect("/?err=" + encodeURIComponent("非法链接。"));
 	}
 };
-
-
 exports.manage = function(req, res){
 	var data = {title: "审核借阅申请列表", list: [], err: null, success: null, page_url: req.url, nick: null};
 	if(users.islogin(req)){
@@ -194,7 +171,6 @@ exports.manage = function(req, res){
 		}
 	});
 };
-
 exports.myborrow = function(req, res){
 	var data = {title: "我的借阅历史", list: [], err: null, success: null, page_url: req.url, nick: null};
 	if(users.islogin(req)){
@@ -215,18 +191,16 @@ exports.myborrow = function(req, res){
 		res.render("myborrow", data);
 	});
 };
-
 exports.pushreturn = function(req, res){
-	var isbn = req.param("isbn");
-	if(isbn){
-		books.pushreturn(req.session.user_info_ob.nick, isbn, function(status, info){
+	var id = req.param("id");
+	if(id){
+		books.pushreturn(id, function(status, info){
 			res.redirect("/myborrow?" + status + "=" + encodeURIComponent(info));
 		});
 	}else{
 		res.redirect("/myborrow?err=" + encodeURIComponent("参数错误。"));
 	}
 };
-
 exports.returnapply = function(req, res){
 	var data = {title: "审核还书申请列表", list: [], err: null, success: null, page_url: req.url, nick: null};
 	if(users.islogin(req)){
@@ -253,29 +227,27 @@ exports.returnapply = function(req, res){
 		}
 	});
 };
-
 exports.checkborrow = function(req, res){
 	var flag = req.param("act");
+	var id = req.param("id");
 	var isbn = req.param("isbn");
-	var user = req.session.user_info_ob.nick;
-	if(flag && isbn && user){
-		books.checkborrow(flag, user, isbn, function(status, info){
+	if(flag && id && isbn){
+		books.checkborrow(flag, id, isbn, function(status, info){
 			res.redirect("/manage?" + status + "=" + encodeURIComponent(info));
 		});
 	}else{
 		res.redirect("/manage?err=" + encodeURIComponent("参数错误。"));
 	}
 };
-
 exports.checkreturn = function(req, res){
 	var flag = req.param("act");
+	var id = req.param("id");
 	var isbn = req.param("isbn");
-	var user = req.session.user_info_ob.nick;
-	if(flag && isbn && user){
-		books.checkreturn(flag, user, isbn, function(status, info){
-			res.redirect("/manage?" + status + "=" + encodeURIComponent(info));
+	if(flag && isbn && id){
+		books.checkreturn(flag, id, isbn, function(status, info){
+			res.redirect("/returnapply?" + status + "=" + encodeURIComponent(info));
 		});
 	}else{
-		res.redirect("/manage?err=" + encodeURIComponent("参数错误。"));
+		res.redirect("/returnapply?err=" + encodeURIComponent("参数错误。"));
 	}
 };

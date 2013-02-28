@@ -10,5 +10,5 @@ block content
 			- if(list)
 			- for ls in list
 				li.item #{ls.username}&nbsp;&nbsp;#{ls.bookname}&nbsp;&nbsp;
-				| <a href="/check_return?act=pass&isbn=#{ls.isbn}">确认还书</a>&nbsp;&nbsp;
-				| <a href="/check_return?act=cancel&isbn=#{ls.isbn}">拒绝</a>
+				| <a href="/check_return?act=pass&id=#{ls._id}&isbn=#{ls.isbn}">确认还书</a>&nbsp;&nbsp;
+				| <a href="/check_return?act=cancel&id=#{ls._id}&isbn=#{ls.isbn}">拒绝</a>

@@ -11,4 +11,4 @@ block content
 			- for ls in list
 				li.item #{ls.bookname}
 					- if(ls.status === 2) 
-						| &nbsp;&nbsp;<a href="/pushreturn?isbn=#{ls.isbn}">申请还书</a>
+						| &nbsp;&nbsp;<a href="/pushreturn?id=#{ls._id}">申请还书</a>
