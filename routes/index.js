@@ -256,7 +256,7 @@ exports.returnbook = function(req, res){
 	}
 	users.isadmin(req, function(man){
 		if(man !== 0){
-			books.getborrowlist(man, 2, function(status, info){
+			books.getborrowlist(man, 3, function(status, info){
 				if(status === "err"){
 					data.err = info;
 				}else if(status === "success"){

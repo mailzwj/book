@@ -194,19 +194,19 @@ exports.checkborrow = function(flag, id, isbn, callback){
 	if(flag === "pass"){
 		ls.update({_id: ls.id(id)}, {"$set": {status: 3}}, function(err){
 			if(err){
-				callback("err", "用户" + username + "的借阅申请审核失败。");
+				callback("err", "用户借阅申请审核失败。");
 			}else{
 				callback("success", "审核通过。");
 			}
 		});
 	}else if(flag === "cancel"){
-		ls.update({_id: ls.id(id)}, {"$set": {status: 2}}, function(err){
+		ls.update({_id: ls.id(id)}, {"$set": {status: 4}}, function(err){
 			if(err){
-				callback("err", "拒绝" + username + "的借阅申请审核失败。");
+				callback("err", "拒绝借阅申请审核失败。");
 			}else{
 				bcol.update({isbn: isbn}, {"$inc": {book_borrowed: -1}}, function(err){
 					if(err){
-						callback("err", "拒绝" + username + "的借阅申请审核失败。");
+						callback("err", "拒绝借阅申请审核失败。");
 					}else{
 						callback("success", "拒绝成功。");
 					}
@@ -229,7 +229,7 @@ exports.checkborrow = function(flag, id, isbn, callback){
 
 exports.checkreturn = function(id, isbn, callback){
 	//通过或拒绝的还书申请，修改借阅历史表中对应记录状态标识
-	ls.update({_id: ls.id(id)}, {"$set": {status: 4, return_time: new Date()}}, function(err){
+	ls.update({_id: ls.id(id)}, {"$set": {status: 5, return_time: new Date()}}, function(err){
 		if(err){
 			callback("err", "还书失败。");
 		}else{
@@ -245,7 +245,7 @@ exports.checkreturn = function(id, isbn, callback){
 };
 
 exports.cancelborrow = function(id, isbn, callback){
-	ls.update({_id: ls.id(id)}, {"$set": {status: 5, return_time: new Date()}}, function(err){
+	ls.update({_id: ls.id(id)}, {"$set": {status: 2, return_time: new Date()}}, function(err){
 		if(err){
 			callback("err", "取消失败，请重新尝试。");
 		}else{
