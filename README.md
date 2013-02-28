@@ -14,9 +14,13 @@ books集合用于存储图书相关信息，其中包含以下文档（字段）
 
 表格(省去可扩展字段)展示形式如下：
 
-|bookname|pic|author|publish_house|publish_date|recommend|book_cate|isbn|book_total|book_borrowed|
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---|:---:|:---:|:---:|:---:|
-|PS教程|http://....png|XXX|邮电出版社|2013-01-01|推荐阅读|1|123456789|3|0|
+|bookname|pic|author|publish_house|publish_date|recommend|book_cate|
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---|:---:|
+|PS教程|http://....png|XXX|邮电出版社|2013-01-01|推荐阅读|1|
+
+|isbn|book_total|book_borrowed|
+|:---:|:---:|:---:|
+|123456789|3|0|
 
 #####1.2 users集合
 users集合数据本身不由本系统创建，该集合数据由ark登录成功后返回用户信息写入，这样可以保证登入用户都是有效的系统内部用户，避免外部用户干扰。该集合包含以下文档（字段）：`nick`（用户昵称/旺旺）、`email`（用户邮箱）、`work_id`（工号）、`isadmin`（是否管理员标记）。
