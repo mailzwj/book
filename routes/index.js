@@ -43,7 +43,9 @@ exports.index = function(req, res){
 			data.list = rs;
 		}
 		users.isadmin(req, function(m){
-			data.isadmin = m;
+			if(m) {
+				data.isadmin = m;
+			}
 			res.render("index", data);
 		});
 	});

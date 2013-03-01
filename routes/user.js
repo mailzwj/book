@@ -93,9 +93,7 @@ exports.isadmin = function(req, callback){
 		if (err) {
 			console.log(err);
 		}
-		if (data.isadmin) {
-			callback && callback(data.isadmin);
-		}
+		callback(data.isadmin);
 	});
 };
 
