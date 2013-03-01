@@ -85,3 +85,17 @@ exports.grant = function (req, admin_cate, callback) {
 		callback && callback();
 	});
 };
+
+exports.findemail = function(username, callback){
+	coll.findOne({nick: username}, function(err, user){
+		if(err){
+			callback(null);
+		}else{
+			if(user){
+				callback(user.email);
+			}else{
+				callback(null);
+			}
+		}
+	});
+};

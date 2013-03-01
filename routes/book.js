@@ -310,3 +310,17 @@ exports.getdetail = function(isbn, callback){
 		}
 	});
 };
+
+exports.findduebook = function(callback){
+	ls.find({status: 3, return_time: {"$lt": new Date()}}).toArray(function(err, rs){
+		if(err){
+			throw err;
+		}else{
+			if(rs){
+				callback(rs);
+			}else{
+				callback(null);
+			}
+		}
+	});
+};
