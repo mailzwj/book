@@ -49,6 +49,7 @@ app.all("/check_borrow", routes.login, routes.checkborrow);
 app.all("/myborrow", routes.login, routes.myborrow);
 app.all("/cancelborrow", routes.login, routes.cancelborrow);
 app.all("/returnbook", routes.login, routes.returnbook);
+app.all('/updatebook', routes.login, routes.updatebook);
 app.all("/check_return", routes.login, routes.checkreturn);
 app.all("/editbook", routes.login, routes.editbook);
 app.all("/delbook", routes.login, routes.delbook);
