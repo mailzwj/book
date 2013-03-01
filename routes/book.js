@@ -74,16 +74,18 @@ exports.getbooklist = function(kw, start, len, callback){
 };
 
 //修改书籍信息
-exports.update = function(bookname, pic, author, publish_house, publish_date, recommend, isbn, book_cate, book_borrowed, book_total, callback){
+//exports.update = function(bookname, pic, author, publish_house, publish_date, recommend, isbn, book_cate, book_borrowed, book_total, callback){
+	exports.update = function(obj, callback){
 	//update book
-	if(bookname && book_cate && isbn){
-		var pic = pic ? pic : "",
-			author = author ? author : "",
-			publish_house = publish_house ? publish_house : "",
-			publish_date = publish_date ? publish_date : "",
-			recomend = recomend ? recomend : "暂无推荐信息",
-			book_number = book_number >= 0 ? book_number : 0;
-		bcol.update({isbn: isbn}, {"$set": {bookname: bookname, pic: pic, author: author, publish_house: publish_house, publish_date: publish_date, borrow_times: 0, score: 0, recommend: recommend, book_cate: book_cate, book_borrowed: book_borrowed, book_total: book_total}}, function(err){
+	if(obj.bookname && obj.book_cate && obj.isbn){
+		var pic = obj.pic || "",
+			author = obj.author || "",
+			publish_house = obj.publish_house || "",
+			publish_date = obj.publish_date || "",
+			recommend = obj.recommend || "暂无推荐信息",
+			book_total = obj.book_total >= 0 ? obj.book_total : 0;
+
+		bcol.update({isbn: obj.isbn}, {"$set": {bookname: obj.bookname, pic: pic, author: author, publish_house: publish_house, publish_date: publish_date, score: 0, recommend: recommend, book_cate: parseInt(obj.book_cate), book_total: parseInt(book_total)}}, function(err){
 			if(err){
 				//throw err;
 				//res.redirect("/addbook?err=图书信息保存失败，请重新添加。");
@@ -102,11 +104,21 @@ exports.update = function(bookname, pic, author, publish_house, publish_date, re
 //根据bookid删除书籍
 exports.del = function(isbn, callback){
 	//delete book
-	bcol.delete({isbn: isbn}, function(err){
+	bcol.findOne({isbn: isbn}, function(err, book){
 		if(err){
-			callback("err", "删除失败了，请重试！");
+			callback("err", "系统错误。");
 		}else{
-			callback("success", "删除成功！");
+			if(book){
+				bcol.remove({isbn: isbn, book_borrowed: 0}, function(err){
+					if(err){
+						callback("err", "删除失败了，请重试！");
+					}else{
+						callback("success", "删除成功！");
+					}
+				});
+			}else{
+				callback("err", "参数错误。");
+			}
 		}
 	});
 };
@@ -256,6 +268,20 @@ exports.cancelborrow = function(id, isbn, callback){
 					callback("success", "借书申请已取消。");
 				}
 			});
+		}
+	});
+};
+
+exports.getbook = function(isbn, callback){
+	bcol.findOne({isbn: isbn}, function(err, obj){
+		if(err){
+			callback("err", "系统错误。");
+		}else{
+			if(obj){
+				callback("success", obj);
+			}else{
+				callback("err", "未找到相关图书。");
+			}
 		}
 	});
 };

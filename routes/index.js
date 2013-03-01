@@ -36,15 +36,17 @@ exports.index = function(req, res){
 			var len = rs.length;
 			for(var i = 0; i < len; i++){
 				if(rs[i].recommend.length > 120){
-					rs[i].recommend = rs[i].recommend.substr(0, 120) + "......";
+					rs[i].recommend = rs[i].recommend.substr(0, 100) + "......";
 				}
 				rs[i].book_number = rs[i].book_total - rs[i].book_borrowed;
 			}
 			data.list = rs;
 		}
-		res.render("index", data);
+		users.isadmin(req, function(m){
+			data.isadmin = m;
+			res.render("index", data);
+		});
 	});
-	
 };
 exports.addbook = function(req, res){
 	var err = req.param("err");
@@ -121,9 +123,10 @@ exports.savebook = function(req, res){
 								response.redirect("/addbook?" + status + "=" + encodeURIComponent(info));
 							});
 						}else{
-							books.update(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, 0, book_number, function(status, info){
+							/*books.update(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, 0, book_number, function(status, info){
 								response.redirect("/updatebook?" + status + "=" + encodeURIComponent(info));
-							});
+							});*/
+							response.redirect("/updatebook?err=" + encodeURIComponent("图书已存在<a href='/editbook?isbn=" + isbn + "'>编辑图书</a>"));
 						}
 					});
 				});
@@ -291,4 +294,52 @@ exports.checkreturn = function(req, res){
 	}else{
 		res.redirect("/returnbook?err=" + encodeURIComponent("参数错误。"));
 	}
+};
+
+exports.editbook = function(req, res){
+	var data = {title: "编辑图书", err: null, book: null, success: null, page_url: req.url, nick: null};
+	var isbn = req.param("isbn");
+	if(req.param("err")){
+		data.err = req.param("err");
+	}
+	if(req.param("success")){
+		data.success = req.param("success");
+	}
+	if(isbn){
+		books.getbook(isbn, function(status, info){
+			if(status === "err"){
+				data.err = info;
+			}else if(status === "success"){
+				data.book = info;
+			}
+			res.render("editbook", data);
+		});
+	}else{
+		data.err = "参数错误。";
+		res.render("editbook", data);
+	}
+};
+
+exports.updatebook = function(req, res){
+	var params = req.query;
+	books.update(params, function(status, info){
+		res.redirect("/editbook?isbn=" + params.isbn + "&" + status + "=" + encodeURIComponent(info))
+	});
+};
+
+exports.delbook = function(req, res){
+	users.isadmin(req, function(m){
+		if(m !== 0){
+			var isbn = req.param("isbn");
+			if(isbn){
+				books.del(isbn, function(status, info){
+					res.redirect("/?" + status + "=" + encodeURIComponent(info));
+				});
+			}else{
+				res.redirect("/?err=" + encodeURIComponent("参数错误。"));
+			}
+		}else{
+			res.redirect("/?err=" + encodeURIComponent("没有权限。"));
+		}
+	});
 };

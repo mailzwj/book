@@ -53,6 +53,8 @@ app.all("/cancelborrow", routes.login, routes.cancelborrow);
 //app.all("/returnapply", routes.login, routes.returnapply);
 app.all("/returnbook", routes.login, routes.returnbook);
 app.all("/check_return", routes.login, routes.checkreturn);
+app.all("/editbook", routes.login, routes.editbook);
+app.all("/delbook", routes.login, routes.delbook);
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));

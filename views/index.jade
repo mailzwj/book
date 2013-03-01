@@ -57,6 +57,9 @@ block content
 							p.yahei.text-tit
 								推荐阅读
 							div.list-text #{rs.recommend}
+							- var adm = isadmin;
+							- if(adm != 0)
+								a.yahei.btn.btn-medium.btn-warning(href="/delbook?isbn=#{rs.isbn}") 删除此书
 							- var flag = parseInt(rs.book_number);
 							- if(flag <= 0)
 								a.yahei.btn.btn-medium.disabled.btn-apply(href="javascript:void(0);") 马上申请

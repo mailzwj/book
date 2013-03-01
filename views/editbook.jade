@@ -1,0 +1,29 @@
+extends layout
+
+block content
+	- if(err)
+		div.alert.alert-error= err
+	- if(success)
+		div.alert.alert-info= success
+	- if(book)
+		form.form-horizontal(action="/updatebook", method="get")
+			div.control-group
+				label.control-label(for="LB-isbn") ISBN编码:
+				div.controls
+					input.input-large(type="text", name="isbn", id="LB-ISBN", placeholder="请填写图书ISBN编码", value="#{book.isbn}", readonly)
+			div.control-group
+				label.control-label(for="LB-bookcate") 图书分类:
+				div.controls
+					input.input-large(type="text", name="book_cate", id="LB-bookcate", value="#{book.book_cate}", placeholder="图书分类（1,2,3）")
+			div.control-group
+				label.control-label(for="LB-number") 总册数:
+				div.controls
+					input.input-large(type="text", name="book_total", id="LB-number", placeholder="总册数（1,2,3）", value="#{book.book_total}")
+			div.control-group
+				label.control-label(for="LB-number") 图书名称:
+				div.controls
+					input.input-large(type="text", name="bookname", id="LB-number", placeholder="总册数（1,2,3）", value="#{book.bookname}")
+			div.control-group
+				div.controls
+					input.btn.btn-primary(type="submit", value="修改")
+		//a(href="/savebook") 添加书籍

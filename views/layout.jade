@@ -39,8 +39,10 @@ html
 				block content
 			div.yahei.footer
 				div.container
-					&copy; UX
-					| <a href="/addbook">添加图书</a>&nbsp;&nbsp;
-					| <a href="/manage">管理借阅</a>&nbsp;&nbsp;
-					| <a href="/returnbook">管理还书</a>
+					&copy; UX&nbsp;&nbsp;
+					- var adm = isadmin;
+					- if(adm != 0)
+						| <a href="/addbook">添加图书</a>&nbsp;&nbsp;
+						| <a href="/manage">管理借阅</a>&nbsp;&nbsp;
+						| <a href="/returnbook">管理还书</a>
 		script(src="/javascripts/library.js")
