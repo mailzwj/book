@@ -10,20 +10,20 @@ block content
 			form.form-search(action="/", method="get")
 				input.input.input-large.search-query(type="text", placeholder="搜索书名或关键字", name="s")
 				input.btn.btn-info.btn-search(type="submit", value="搜 索")
-				span.hot-keys 推荐搜索：
-				a.highlight(href="") javascript
-				| &nbsp;
-				a(href="") css
-				| &nbsp;
-				a(href="") nodejs
-				| &nbsp;
-				a(href="") 设计模式
-				| &nbsp;
-				a.highlight(href="") photoshop
-				| &nbsp;
-				a(href="") html5
-				| &nbsp;
-				a(href="") 移动web
+				//span.hot-keys 推荐搜索：
+					a.highlight(href="") javascript
+					| &nbsp;
+					a(href="") css
+					| &nbsp;
+					a(href="") nodejs
+					| &nbsp;
+					a(href="") 设计模式
+					| &nbsp;
+					a.highlight(href="") photoshop
+					| &nbsp;
+					a(href="") html5
+					| &nbsp;
+					a(href="") 移动web
 		div.booklist
 			- if(kw)
 				div.search-keyword
@@ -66,7 +66,7 @@ block content
 							- else
 								a.yahei.btn.btn-info.btn-medium.btn-apply(href="/apply/#{rs.isbn}") 马上申请
 
-	div.pull-right.sidebar
+	//div.pull-right.sidebar
 		h3.yahei.sb-title
 			i.icons.icon-sbtitle
 			| &nbsp;最受欢迎TOP10

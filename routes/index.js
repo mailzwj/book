@@ -211,43 +211,7 @@ exports.cancelborrow = function(req, res){
 		res.redirect("/myborrow?err=" + encodeURIComponent("参数错误。"));
 	}
 };
-/*
-exports.pushreturn = function(req, res){
-	var id = req.param("id");
-	if(id){
-		books.pushreturn(id, function(status, info){
-			res.redirect("/myborrow?" + status + "=" + encodeURIComponent(info));
-		});
-	}else{
-		res.redirect("/myborrow?err=" + encodeURIComponent("参数错误。"));
-	}
-};
-exports.returnapply = function(req, res){
-	var data = {title: "审核还书申请列表", list: [], err: null, success: null, page_url: req.url, nick: null};
-	if(users.islogin(req)){
-		data.nick = req.session.user_info_ob.nick;
-	}
-	if(req.param("err")){
-		data.err = req.param("err");
-	}
-	if(req.param("success")){
-		data.success = req.param("success");
-	}
-	users.isadmin(req, function(man){
-		if(man !== 0){
-			books.getborrowlist(man, 3, function(status, info){
-				if(status === "err"){
-					data.err = info;
-				}else if(status === "success"){
-					data.list = info;
-				}
-				res.render("returnapply", data);
-			});
-		}else{
-			res.render("returnapply", data);
-		}
-	});
-};*/
+
 exports.returnbook = function(req, res){
 	var data = {title: "已借出图书列表", list: [], err: null, success: null, page_url: req.url, nick: null};
 	if(users.islogin(req)){
