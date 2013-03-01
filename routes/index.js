@@ -307,6 +307,9 @@ exports.editbook = function(req, res){
 	if(req.param("success")){
 		data.success = req.param("success");
 	}
+	if(users.islogin(req)){
+		data.nick = req.session.user_info_ob.nick;
+	}
 	if(isbn){
 		books.getbook(isbn, function(status, info){
 			if(status === "err"){
@@ -344,4 +347,37 @@ exports.delbook = function(req, res){
 			res.redirect("/?err=" + encodeURIComponent("没有权限。"));
 		}
 	});
+};
+
+exports.detail = function(req, res){
+	var data = {title: "图书详情", page_url: req.url.replace(/\?.*$/g, ""), err: null, success: null, book: null, nick: null};
+	if(req.param("err")){
+		data.err = req.param("err");
+	}
+	if(req.param("success")){
+		data.success = req.param("success");
+	}
+	if(users.islogin(req)){
+		data.nick = req.session.user_info_ob.nick;
+	}
+	var isbn = req.param("isbn");
+	if(isbn){
+		books.getdetail(isbn, function(status, info){
+			if(status === "err"){
+				data.err = info;
+			}else if(status === "success"){
+				data.book = info;
+			}
+			users.isadmin(req, function(m){
+				data.isadmin = m;
+				res.render("detail", data);
+			});
+		});
+	}else{
+		data.err = "参数错误。";
+		users.isadmin(req, function(m){
+			data.isadmin = m;
+			res.render("detail", data);
+		});
+	}
 };

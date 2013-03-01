@@ -285,3 +285,39 @@ exports.getbook = function(isbn, callback){
 		}
 	});
 };
+
+exports.getdetail = function(isbn, callback){
+	bcol.findOne({isbn: isbn}, function(err, book){
+		if(err){
+			callback("err", "系统错误。");
+		}else{
+			if(book){
+				//callback("success", book);
+				ls.find({isbn: isbn}, {sort: [["borrow_time", "desc"]]}).toArray(function(err, rs){
+					if(err){
+						callback("err", "获取借阅历史失败。");
+					}else{
+						if(rs){
+							for(var i = 0; i < rs.length; i++){
+								if(rs[i].status !== 1){
+									var bt = rs[i].borrow_time;
+									rs[i].borrow_time = exports.formatDate(bt , "yyyy-mm-dd hh:ii:ss");
+									rs[i].return_time = exports.formatDate(new Date(rs[i].return_time), "yyyy-mm-dd hh:ii:ss");
+									rs[i].holdtime = new Date(bt - new Date(rs[i].return_time)).getDate();
+								}else{
+									rs[i].borrow_time = exports.formatDate(rs[i].borrow_time , "yyyy-mm-dd hh:ii:ss");
+								}
+							}
+							book.history = rs;
+						}else{
+							book.history = null;
+						}
+						callback("success", book);
+					}
+				});
+			}else{
+				callback("err", "未找到相关图书。");
+			}
+		}
+	});
+};

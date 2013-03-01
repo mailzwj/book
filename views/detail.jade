@@ -1,0 +1,49 @@
+extends layout
+
+block content
+	- if(err)
+		div.alert.alert-error= err
+	- if(success)
+		div.alert.alert-info= success
+	div.pull-left.mainbox
+		div.bookdetail
+			- if(book)
+				div.bookinfo.clearfix
+					a.pic-link(href="/detail/#{book.isbn}")
+						img.list-pic(src="#{book.pic}", width="250", height="250")
+					div.list-detail
+						p.text-link
+							a(href="/detail/#{book.isbn}") #{book.bookname}
+						table.book-info(border="0", width="100%")
+							tr
+								td(width="50%") 作&nbsp;&nbsp;&nbsp;&nbsp;者：#{book.author} 编著
+								td(width="50%") 出&nbsp;版&nbsp;社：#{book.publish_house}
+							tr
+								td 出版时间：#{book.publish_date}
+								td 借阅次数：#{book.borrow_times}次
+							tr
+								td ＩＳＢＮ：#{book.isbn}
+								td 可借册数：#{book.book_number}册
+						p.yahei.text-tit
+							推荐阅读
+						div.list-text #{book.recommend}
+						- var adm = isadmin;
+						- if(adm != 0)
+							a.yahei.btn.btn-medium.btn-danger(href="/delbook?isbn=#{book.isbn}") 删除此书
+							| &nbsp;&nbsp;
+							a.yahei.btn.btn-medium.btn-success(href="/editbook?isbn=#{book.isbn}") 编辑图书
+							| &nbsp;&nbsp;
+						- var flag = parseInt(book.book_number);
+						- if(flag <= 0)
+							a.yahei.btn.btn-medium.disabled.btn-apply(href="javascript:void(0);") 马上申请
+						- else
+							a.yahei.btn.btn-info.btn-medium.btn-apply(href="/apply/#{book.isbn}") 马上申请
+				div.book_history
+					h3.historytitle 借阅历史
+					ul.hislist
+						- if(book.history)
+						- each his in book.history
+							- if(his.status != 1)
+								li.item <span class="user">#{his.username}</span>于<span class="start">#{his.borrow_time}</span>借阅本书，直到<span class="end">#{his.return_time}</span>归还，累计阅读<span class="days">#{his.holdtime}</span>天
+							- else
+								li.item <span class="user">#{his.username}</span>于<span class="start">#{his.borrow_time}</span>借阅本书，正在阅读...

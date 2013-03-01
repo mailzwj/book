@@ -39,11 +39,11 @@ block content
 				- if(list)
 				- each rs in list
 					li.item.clearfix
-						a.pic-link(href="/bookdetail/#{rs.isbn}")
+						a.pic-link(href="/detail/#{rs.isbn}")
 							img.list-pic(src="#{rs.pic}", width="250", height="250")
 						div.list-detail
 							p.text-link
-								a(href="/bookdetail/#{rs.isbn}") #{rs.bookname}
+								a(href="/detail/#{rs.isbn}") #{rs.bookname}
 							table.book-info(border="0", width="100%")
 								tr
 									td(width="50%") 作&nbsp;&nbsp;&nbsp;&nbsp;者：#{rs.author} 编著
@@ -59,7 +59,9 @@ block content
 							div.list-text #{rs.recommend}
 							- var adm = isadmin;
 							- if(adm != 0)
-								a.yahei.btn.btn-medium.btn-warning(href="/delbook?isbn=#{rs.isbn}") 删除此书
+								a.yahei.btn.btn-medium.btn-danger(href="/delbook?isbn=#{rs.isbn}") 删除此书
+								| &nbsp;&nbsp;
+								a.yahei.btn.btn-medium.btn-success(href="/editbook?isbn=#{rs.isbn}") 编辑图书
 							- var flag = parseInt(rs.book_number);
 							- if(flag <= 0)
 								a.yahei.btn.btn-medium.disabled.btn-apply(href="javascript:void(0);") 马上申请
