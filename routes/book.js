@@ -104,7 +104,7 @@ exports.getbooklist = function(kw, start, len, callback){
 //根据bookid删除书籍
 exports.del = function(isbn, callback){
 	//delete book
-	bcol.findOne({isbn: isbn}, function(err, book){
+	bcol.findOne({isbn: isbn, book_borrowed: 0}, function(err, book){
 		if(err){
 			callback("err", "系统错误。");
 		}else{
@@ -227,17 +227,6 @@ exports.checkborrow = function(flag, id, isbn, callback){
 		});
 	}
 };
-
-/*exports.pushreturn = function(id, callback){
-	//修改借阅历史表的还书申请状态
-	ls.update({_id: ls.id(id)}, {"$set": {status: 3}}, function(err){
-		if(err){
-			callback("err", "还书申请发送失败，请重新发送。");
-		}else{
-			callback("success", "还书申请发送成功，请到管理员处还书。");
-		}
-	});
-};*/
 
 exports.checkreturn = function(id, isbn, callback){
 	//通过或拒绝的还书申请，修改借阅历史表中对应记录状态标识

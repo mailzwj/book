@@ -55,27 +55,6 @@ exports.login = function(req, res, callback){
 			callback && callback();
 		});
 	}
-
-	// var user_info_ob = JSON.parse(decodeURIComponent(user_info)).data;
-
-	// 	user_info_ob = {
-	// 		nick: user_info_ob.WangWang,
-	// 		email: user_info_ob.Email,
-	// 		work_id: user_info_ob.WorkId
-	// 	};
-
-	// 	coll.find({'work_id': user_info_ob.WorkId}, function (err, data) {
-	// 		if (err) {
-	// 			console.log(err);
-	// 		}
-	// 		// 写入数据库
-	// 		if (!data) {
-	// 			exports.add(user_info_ob);
-	// 		}
-	// 		// 写入session
-	// 		req.session.user_info_ob = user_info_ob;
-	// 		callback && callback();
-	// 	});
 };
 
 //判断用户是否已登录，并返回昵称
