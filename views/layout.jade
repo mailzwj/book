@@ -40,7 +40,7 @@ html
 			div.yahei.footer
 				div.container
 					&copy; UX&nbsp;&nbsp;
-					- var adm = isadmin;
+					- var adm = typeof isadmin === "undefined" ? 0 : isadmin;
 					- if(adm != 0)
 						| <a href="/addbook">添加图书</a>&nbsp;&nbsp;
 						| <a href="/manage">管理借阅</a>&nbsp;&nbsp;
