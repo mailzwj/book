@@ -6,7 +6,7 @@ var mail = require("./mail");
 var books = require("./book");
 var users = require("./user");
 
-setTimeout(function () {
+function sendmail(){
 	books.findduebook(function(rs){
 		if(rs){
 			for(var i = 0; i < rs.length; i++){
@@ -25,4 +25,9 @@ setTimeout(function () {
 			}
 		}
 	});
-}, 24 * 3600);
+	setTimeout(function () {
+		sendmail();
+	}, 24 * 3600);
+}
+
+sendmail();
