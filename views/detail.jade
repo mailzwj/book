@@ -55,7 +55,7 @@ block content
 							li.item #{com.username}说：#{com.content}
 				h3.mod-title 发表品论
 				div.commentarea
-					form.form-horizental.form-comment(action="/savecomment",method="get")
+					form.form-horizontal.form-comment(action="/savecomment",method="get")
 						input(type="hidden", name="isbn", value="#{book.isbn}")
 						div.control-group
 							label.control-label(for="com-username") 用户名：
