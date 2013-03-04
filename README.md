@@ -9,7 +9,7 @@ windows: set NODE_ENV=production
 
 *开发前请绑定本地host为book.etao.net*，目前远程数据库使用[mongolab](https://mongolab.com/)
 
-##图书管理系统
+##图书管理系统设计说明
 ###1、数据库设计
 本系统数据使用Nosql型数据库mongodb将数据存储于books数据库中，自PHP+Mysql之后Nodejs+Mongodb可谓是新生技术中的又一黄金搭档。本系统设计了三个集合（collection），分别是：books（存储图书相关信息）、users（存储用户相关信息）、lendhistory（存储借/还书历史）。
 #####1.1 books集合
