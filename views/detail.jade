@@ -47,3 +47,26 @@ block content
 								li.item <span class="user">#{his.username}</span>于<span class="start">#{his.borrow_time}</span>借阅本书，直到<span class="end">#{his.return_time}</span>归还，累计阅读<span class="days">#{his.holdtime}</span>天
 							- else
 								li.item <span class="user">#{his.username}</span>于<span class="start">#{his.borrow_time}</span>借阅本书，正在阅读...
+				hr
+				div.comments
+					ul.com-list
+						- if(book.comments)
+						- each com in book.comments
+							li.item #{com.username}说：#{com.content}
+				h3.mod-title 发表品论
+				div.commentarea
+					form.form-horizental.form-comment(action="/savecomment",method="get")
+						input(type="hidden", name="isbn", value="#{book.isbn}")
+						div.control-group
+							label.control-label(for="com-username") 用户名：
+							div.controls
+								input#com-username.input-large(type="text", name="username", value="#{nick}", readonly)
+						div.control-group
+							label.control-label(for="com-textarea") 评论：
+							div.controls
+								textarea#com-textarea.com-textarea(name="comment", row="8", col="80", placeholder="请填写评论信息")
+						div.control-group
+							div.controls
+								input.btn.btn-primary(type="submit", value="评论")
+								| &nbsp;&nbsp;
+								input.btn(type="reset", value="重置")

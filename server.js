@@ -54,6 +54,7 @@ app.all("/check_return", routes.login, routes.checkreturn);
 app.all("/editbook", routes.login, routes.editbook);
 app.all("/delbook", routes.login, routes.delbook);
 app.all("/detail/:isbn", routes.login, routes.detail);
+app.all("/savecomment", routes.login, routes.savecomment);
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));

@@ -324,3 +324,13 @@ exports.findduebook = function(callback){
 		}
 	});
 };
+
+exports.pushcomment = function(isbn, username, comment, callback){
+	bcol.update({isbn: isbn}, {"$push": {comments: {username: username, content: comment}}}, function(err){
+		if(err){
+			callback("err", "系统错误。");
+		}else{
+			callback("success", "评论成功。");
+		}
+	});
+};

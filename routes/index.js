@@ -330,6 +330,9 @@ exports.detail = function(req, res){
 			if(status === "err"){
 				data.err = info;
 			}else if(status === "success"){
+				if(!info.comments){
+					info.comments = [];
+				}
 				data.book = info;
 			}
 			users.isadmin(req, function(m){
@@ -345,3 +348,16 @@ exports.detail = function(req, res){
 		});
 	}
 };
+
+exports.savecomment = function(req, res){
+	var u = req.param("username");
+	var c = req.param("comment");
+	var isbn = req.param("isbn");
+	if(c){
+		books.pushcomment(isbn, u, c, function(status, info){
+			res.redirect("/detail/" + isbn + "?" + status + "=" + encodeURIComponent(info));
+		});
+	}else{
+		res.redirect("/detail/" + isbn + "?err=" + encodeURIComponent("评论内容不能为空。"));
+	}
+}
