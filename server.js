@@ -56,6 +56,11 @@ app.all("/delbook", routes.login, routes.delbook);
 app.all("/detail/:isbn", routes.login, routes.detail);
 app.all("/savecomment", routes.login, routes.savecomment);
 
+/********** 移动路由 **********/
+var m = require("./routes/mobile");
+app.all("/login", m.mlogin);
+app.all("/mindex", m.mindex);
+
 http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
 });
