@@ -95,9 +95,10 @@ var mRoutes = require("./routes/mobile");
 var mUrlArr = [
     '/login',
     '/mindex',
-    'scanborrow',
-    'mdetail',
-    'madd'
+    '/scanborrow',
+    '/mdetail',
+    '/madd',
+    '/mreturn'
 
 ];
 var mRouteArr = [
@@ -105,7 +106,8 @@ var mRouteArr = [
     'mindex',
     'scanborrow',
     'mdetail',
-    'madd'
+    'madd',
+    'mreturn'
 ];
 
 mUrlArr.forEach(function (v, i) {

@@ -7,6 +7,8 @@ var db = config.db;
 var bcol = db.collection("books");
 var ls = db.collection("lendhistory");
 
+exports.ls = ls;
+
 exports.formatDate = function(date, style){  
 	var y = date.getFullYear();    
 	var M = "0" + (date.getMonth() + 1);    

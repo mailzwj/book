@@ -22,7 +22,7 @@ exports.index = function(req, res){
 	}
 	var data = {title: "我的图书管理系统", page_url: req.url.replace(/\?.*$/g, ""), kw: kw, err: null, success: null, list: [], nick: null};
 	if(users.islogin(req)){
-		data.nick = users.islogin(req);
+		data.nick = req.session.user_info_ob.nick;
 	}
 	if(err){
 		data.err = err;
@@ -56,7 +56,7 @@ exports.addbook = function(req, res){
 	var suc = req.param("success");
 	var data = {title: "添加图书", page_url: req.url.replace(/\?.*$/g, ""), err: null, success: null, nick: null};
 	if(users.islogin(req)){
-		data.nick = users.islogin(req);
+		data.nick = req.session.user_info_ob.nick;
 	}
 	if(err){
 		data.err = err;

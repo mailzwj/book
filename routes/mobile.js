@@ -4,6 +4,7 @@
 
 var users = require('./user');
 var books = require('./book');
+var http = require("http");
 
 exports.mlogin = function(req, res, next){
 	//users.login(req, res, next);
@@ -110,22 +111,22 @@ exports.mdetail = function(req, res){
 
 exports.madd = function(req, res){
 	var cb = req.param("callback");
-	if(req.param("isbn") && req.param("bc") && req.param("number")){
+	if(req.param("isbn") && req.param("bookcate") && req.param("number")){
 		var isbn = req.param("isbn");
-		var book_cate = parseInt(req.param("bc"));
+		var book_cate = parseInt(req.param("bookcate"));
 		var book_number = parseInt(req.param("number"));
-		var req = http.request({
+		var requ = http.request({
 			host: "api.douban.com",
 			port: 80,
 			path: "/book/subject/isbn/" + isbn + "?alt=json",
 			method: "GET"
-		}, function(res){
+		}, function(resp){
 			var buf = [], size = 0;
-			res.on("data", function(data){
+			resp.on("data", function(data){
 				buf.push(data);
 				size += data.length;
 			});
-			res.on("end", function(){
+			resp.on("end", function(){
 				var data = new Buffer(size);
 				for(var i = 0, pos = 0; i < buf.length; i++){
 					buf[i].copy(data, pos);
@@ -133,7 +134,12 @@ exports.madd = function(req, res){
 				}
 				data = data.toString("utf8");
 				if(data === "bad isbn"){
-					response.redirect("/addbook?err=" + encodeURIComponent('"' + isbn + '" is a bad isbn.'));
+					//response.redirect("/addbook?err=" + encodeURIComponent('"' + isbn + '" is a bad isbn.'));
+					if(cb){
+						res.send(cb + "({\"isSuccess\": false, \"error\": \"ISBN有误。\"});");
+					}else{
+						res.send("var json={\"isSuccess\": false, \"error\": \"ISBN有误。\"};");
+					}
 					return false;
 				}
 				data = JSON.parse(data);
@@ -176,12 +182,68 @@ exports.madd = function(req, res){
 				});
 			});
 		});
-		req.end();
+		requ.end();
 	}else{
 		if(cb){
 			res.send(cb + "({\"isSuccess\": false, \"error\": \"添加失败，图书信息不足。\"});");
 		}else{
 			res.send("var json={\"isSuccess\": false, \"error\": \"添加失败，图书信息不足。\"};");
+		}
+	}
+};
+
+exports.mreturn = function(req, res){
+	var nick = "";
+	var cb = req.param("callback");
+	if(req.session.userinfo && req.session.userinfo.nick){
+		nick = req.session.userinfo.nick;
+	}else{
+		if(cb){
+			res.send(cb + "({\"isSuccess\": false, \"error\": \"非法操作。\"});");
+		}else{
+			res.send("var json={\"isSuccess\": false, \"error\": \"非法操作。\"};");
+		}
+	}
+	var isbn = req.param("isbn");
+	if(nick && isbn){
+		books.ls.findOne({username: nick, isbn: isbn}, function(err, rs){
+			if(err){
+				if(cb){
+					res.send(cb + "({\"isSuccess\": false, \"error\": \"系统错误。\"});");
+				}else{
+					res.send("var json={\"isSuccess\": false, \"error\": \"系统错误。\"};");
+				}
+			}else{
+				if(rs){
+					books.checkreturn(rs._id, isbn, function(status, info){
+						if(status === "err"){
+							if(cb){
+								res.send(cb + "({\"isSuccess\": false, \"error\": \"" + info + "\"});");
+							}else{
+								res.send("var json={\"isSuccess\": false, \"error\": \"" + info + "\"};");
+							}
+						}else{
+							if(cb){
+								res.send(cb + "({\"isSuccess\": true, \"book\": \"" + info + "\"});");
+							}else{
+								res.send("var json={\"isSuccess\": true, \"book\": \"" + info + "\"};");
+							}
+						}
+					});
+				}else{
+					if(cb){
+						res.send(cb + "({\"isSuccess\": false, \"error\": \"未找到借书记录。\"});");
+					}else{
+						res.send("var json={\"isSuccess\": false, \"error\": \"未找到借书记录。\"};");
+					}
+				}
+			}
+		});
+	}else{
+		if(cb){
+			res.send(cb + "({\"isSuccess\": false, \"error\": \"参数错误。\"});");
+		}else{
+			res.send("var json={\"isSuccess\": false, \"error\": \"参数错误。\"};");
 		}
 	}
 };
