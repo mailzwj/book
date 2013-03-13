@@ -7,7 +7,7 @@ Mac：$ export NODE_ENV=production
 windows: set NODE_ENV=production  
 
 
-*开发前请绑定本地host为ux.etao.net*，访问ux.etao.net:端口/book.目前远程数据库使用[mongolab](https://mongolab.com/)
+*开发前请绑定本地host为uxx.etao.net*，访问uxx.etao.net:端口/book.目前远程数据库使用[mongolab](https://mongolab.com/)
 
 ##图书管理系统设计说明
 ###1、数据库设计

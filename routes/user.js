@@ -31,7 +31,7 @@ exports.login = function(req, res, callback){
 	var user_info = req.cookies.user_info;
 	if (!user_info) {
 		// 接入UX平台登录功能，野草负责
-		res.redirect('http://ux.etao.net/api/ucenter/userauth.php?domain=book.etao.net&url=http%3A%2F%2Fbook.etao.net%3A' + res.app.get('port'));
+		res.redirect('http://ux.etao.net/api/ucenter/userauth.php?domain=uxx.etao.net&url=http%3A%2F%2Fuxx.etao.net%3A' + res.app.get('port') + '/book');
 	} else {
 		var user_info_ob = JSON.parse(decodeURIComponent(user_info)).data;
 
