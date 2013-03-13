@@ -11,9 +11,9 @@ block content
 			- for ls in list
 				li.item #{ls.bookname}&nbsp;&nbsp;#{ls.borrow_time}&nbsp;&nbsp;#{ls.return_time}
 					- if(ls.status === 3) 
-						| &nbsp;&nbsp;<span class="status-info">正在阅读...</span><!--<a href="/pushreturn?id=#{ls._id}">申请还书</a>-->
+						| &nbsp;&nbsp;<span class="status-info">正在阅读...</span><!--<a href="/book/pushreturn?id=#{ls._id}">申请还书</a>-->
 					- else if(ls.status === 1)
-						| &nbsp;&nbsp;<span class="status-info">借书申请已提交，等待管理员审核</span>或<a href="/cancelborrow?id=#{ls._id}&isbn=#{ls.isbn}">取消申请</a>
+						| &nbsp;&nbsp;<span class="status-info">借书申请已提交，等待管理员审核</span>或<a href="/book/cancelborrow?id=#{ls._id}&isbn=#{ls.isbn}">取消申请</a>
 					- else if(ls.status === 2)
 						| &nbsp;&nbsp;<span class="status-info">用户取消</span>
 					- else if(ls.status === 4)

@@ -12,7 +12,7 @@ html
 		div.page
 			div.header
 				div.container
-					a.logo(href="/")
+					a.logo(href="/book")
 						img(src="/images/logo.png")
 					div.about-user
 						- if(nick)
@@ -21,7 +21,7 @@ html
 									i.icons.icon-hassub
 								ul.act-list
 									li.item
-										a(href="/myborrow") 我的借阅
+										a(href="/book/myborrow") 我的借阅
 			div.banner
 				div.container
 					div.banner-switch
@@ -42,7 +42,7 @@ html
 					&copy; UX&nbsp;&nbsp;
 					- var adm = typeof isadmin === "undefined" ? 0 : isadmin;
 					- if(adm != 0)
-						| <a href="/addbook">添加图书</a>&nbsp;&nbsp;
-						| <a href="/manage">管理借阅</a>&nbsp;&nbsp;
-						| <a href="/returnbook">管理还书</a>
+						| <a href="/book/addbook">添加图书</a>&nbsp;&nbsp;
+						| <a href="/book/manage">管理借阅</a>&nbsp;&nbsp;
+						| <a href="/book/returnbook">管理还书</a>
 		script(src="/javascripts/library.js")

@@ -5,7 +5,7 @@ block content
 		div.alert.alert-error= err
 	- if(success)
 		div.alert.alert-info= success
-	form.form-horizontal(action="/savebook", method="get")
+	form.form-horizontal(action="/book/savebook", method="get")
 		div.control-group
 			label.control-label(for="LB-isbn") ISBN编码:
 			div.controls
@@ -21,4 +21,4 @@ block content
 		div.control-group
 			div.controls
 				input.btn.btn-primary(type="submit", value="添加")
-	//a(href="/savebook") 添加书籍
+	//a(href="/book/savebook") 添加书籍

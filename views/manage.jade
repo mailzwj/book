@@ -9,4 +9,4 @@ block content
 		ul.borrow-list
 			- if(list)
 			- for ls in list
-				li.item #{ls.username}&nbsp;&nbsp;#{ls.bookname}&nbsp;&nbsp;<a href="/check_borrow?act=pass&id=#{ls._id}&isbn=#{ls.isbn}">通过</a>&nbsp;&nbsp;<a href="/check_borrow?act=cancel&id=#{ls._id}&isbn=#{ls.isbn}">拒绝</a>
+				li.item #{ls.username}&nbsp;&nbsp;#{ls.bookname}&nbsp;&nbsp;<a href="/book/check_borrow?act=pass&id=#{ls._id}&isbn=#{ls.isbn}">通过</a>&nbsp;&nbsp;<a href="/book/check_borrow?act=cancel&id=#{ls._id}&isbn=#{ls.isbn}">拒绝</a>

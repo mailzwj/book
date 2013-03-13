@@ -6,6 +6,7 @@ var users = require('./user');
 var books = require('./book');
 var mail = require('./mailsender');
 var http = require("http");
+var rootDir = require('./rootdir').rootDir;
 
 exports.login = function(req, res, next){
 	users.login(req, res, next);
@@ -83,7 +84,7 @@ exports.updatebook = function(req, res){
 exports.savebook = function(req, res){
 	var response = res, request = req;
 	if(!users.islogin(req)){
-		res.redirect("/addbook?err=" + encodeURIComponent("添加图书前，请先登录。"));
+		res.redirect("/" + rootDir + "/addbook?err=" + encodeURIComponent("添加图书前，请先登录。"));
 	}else{
 		if(req.param("isbn") && req.param("bc") && req.param("number")){
 			var isbn = req.param("isbn");
@@ -108,7 +109,7 @@ exports.savebook = function(req, res){
 					}
 					data = data.toString("utf8");
 					if(data === "bad isbn"){
-						response.redirect("/addbook?err=" + encodeURIComponent('"' + isbn + '" is a bad isbn.'));
+						response.redirect("/" + rootDir + "/addbook?err=" + encodeURIComponent('"' + isbn + '" is a bad isbn.'));
 						return false;
 					}
 					data = JSON.parse(data);
@@ -122,20 +123,20 @@ exports.savebook = function(req, res){
 					books.hasbook(isbn, function(flag){
 						if(!flag){
 							books.add(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, 0, book_number, function(status, info){
-								response.redirect("/addbook?" + status + "=" + encodeURIComponent(info));
+								response.redirect("/" + rootDir + "/addbook?" + status + "=" + encodeURIComponent(info));
 							});
 						}else{
 							/*books.update(bookname, links, bookinfo["author"], bookinfo["publisher"] ? bookinfo["publisher"] : "", bookinfo["pubdate"], rc, isbn, book_cate, 0, book_number, function(status, info){
 								response.redirect("/updatebook?" + status + "=" + encodeURIComponent(info));
 							});*/
-							response.redirect("/updatebook?err=" + encodeURIComponent("图书已存在<a href='/editbook?isbn=" + isbn + "'>编辑图书</a>"));
+							response.redirect("/" + rootDir + "/updatebook?err=" + encodeURIComponent("图书已存在<a href='/editbook?isbn=" + isbn + "'>编辑图书</a>"));
 						}
 					});
 				});
 			});
 			req.end();
 		}else{
-			res.redirect("/addbook?err=" + encodeURIComponent("图书信息不足。"));
+			res.redirect("/" + rootDir + "/addbook?err=" + encodeURIComponent("图书信息不足。"));
 		}
 	}
 };
@@ -144,10 +145,10 @@ exports.apply = function(req, res){
 	var isbn = req.param("isbn");
 	if(isbn){
 		books.pushborrow(req.session.user_info_ob.nick, isbn, function(status, info){
-			res.redirect("/?" + status + "=" + encodeURIComponent(info));
+			res.redirect("/" + rootDir + "/?" + status + "=" + encodeURIComponent(info));
 		});
 	}else{
-		res.redirect("/?err=" + encodeURIComponent("非法链接。"));
+		res.redirect("/" + rootDir + "/?err=" + encodeURIComponent("非法链接。"));
 	}
 };
 exports.manage = function(req, res){
@@ -205,10 +206,10 @@ exports.cancelborrow = function(req, res){
 	var isbn = req.param("isbn");
 	if(id && isbn){
 		books.cancelborrow(id, isbn, function(status, info){
-			res.redirect("/myborrow?" + status + "=" + encodeURIComponent(info));
+			res.redirect("/" + rootDir + "/myborrow?" + status + "=" + encodeURIComponent(info));
 		});
 	}else{
-		res.redirect("/myborrow?err=" + encodeURIComponent("参数错误。"));
+		res.redirect("/" + rootDir + "/myborrow?err=" + encodeURIComponent("参数错误。"));
 	}
 };
 
@@ -244,10 +245,10 @@ exports.checkborrow = function(req, res){
 	var isbn = req.param("isbn");
 	if(flag && id && isbn){
 		books.checkborrow(flag, id, isbn, function(status, info){
-			res.redirect("/manage?" + status + "=" + encodeURIComponent(info));
+			res.redirect("/" + rootDir + "/manage?" + status + "=" + encodeURIComponent(info));
 		});
 	}else{
-		res.redirect("/manage?err=" + encodeURIComponent("参数错误。"));
+		res.redirect("/" + rootDir + "/manage?err=" + encodeURIComponent("参数错误。"));
 	}
 };
 exports.checkreturn = function(req, res){
@@ -255,10 +256,10 @@ exports.checkreturn = function(req, res){
 	var isbn = req.param("isbn");
 	if(isbn && id){
 		books.checkreturn(id, isbn, function(status, info){
-			res.redirect("/returnbook?" + status + "=" + encodeURIComponent(info));
+			res.redirect("/" + rootDir + "/returnbook?" + status + "=" + encodeURIComponent(info));
 		});
 	}else{
-		res.redirect("/returnbook?err=" + encodeURIComponent("参数错误。"));
+		res.redirect("/" + rootDir + "/returnbook?err=" + encodeURIComponent("参数错误。"));
 	}
 };
 
@@ -292,7 +293,7 @@ exports.editbook = function(req, res){
 exports.updatebook = function(req, res){
 	var params = req.query;
 	books.update(params, function(status, info){
-		res.redirect("/editbook?isbn=" + params.isbn + "&" + status + "=" + encodeURIComponent(info))
+		res.redirect("/" + rootDir + "/editbook?isbn=" + params.isbn + "&" + status + "=" + encodeURIComponent(info))
 	});
 };
 
@@ -302,13 +303,13 @@ exports.delbook = function(req, res){
 			var isbn = req.param("isbn");
 			if(isbn){
 				books.del(isbn, function(status, info){
-					res.redirect("/?" + status + "=" + encodeURIComponent(info));
+					res.redirect("/" + rootDir + "/?" + status + "=" + encodeURIComponent(info));
 				});
 			}else{
-				res.redirect("/?err=" + encodeURIComponent("参数错误。"));
+				res.redirect("/" + rootDir + "/?err=" + encodeURIComponent("参数错误。"));
 			}
 		}else{
-			res.redirect("/?err=" + encodeURIComponent("没有权限。"));
+			res.redirect("/" + rootDir + "/?err=" + encodeURIComponent("没有权限。"));
 		}
 	});
 };
@@ -355,9 +356,9 @@ exports.savecomment = function(req, res){
 	var isbn = req.param("isbn");
 	if(c){
 		books.pushcomment(isbn, u, c, function(status, info){
-			res.redirect("/detail/" + isbn + "?" + status + "=" + encodeURIComponent(info));
+			res.redirect("/" + rootDir + "/detail/" + isbn + "?" + status + "=" + encodeURIComponent(info));
 		});
 	}else{
-		res.redirect("/detail/" + isbn + "?err=" + encodeURIComponent("评论内容不能为空。"));
+		res.redirect("/" + rootDir + "/detail/" + isbn + "?err=" + encodeURIComponent("评论内容不能为空。"));
 	}
 }
