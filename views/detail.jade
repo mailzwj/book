@@ -9,11 +9,11 @@ block content
 		div.bookdetail
 			- if(book)
 				div.bookinfo.clearfix
-					a.pic-link(href="/detail/#{book.isbn}")
+					a.pic-link(href="/book/detail/#{book.isbn}")
 						img.list-pic(src="#{book.pic}", width="250", height="250")
 					div.list-detail
 						p.text-link
-							a(href="/detail/#{book.isbn}") #{book.bookname}
+							a(href="/book/detail/#{book.isbn}") #{book.bookname}
 						table.book-info(border="0", width="100%")
 							tr
 								td(width="50%") 作&nbsp;&nbsp;&nbsp;&nbsp;者：#{book.author} 编著
@@ -29,15 +29,15 @@ block content
 						div.list-text #{book.recommend}
 						- var adm = isadmin;
 						- if(adm != 0)
-							a.yahei.btn.btn-medium.btn-danger(href="/delbook?isbn=#{book.isbn}") 删除此书
+							a.yahei.btn.btn-medium.btn-danger(href="/book/delbook?isbn=#{book.isbn}") 删除此书
 							| &nbsp;&nbsp;
-							a.yahei.btn.btn-medium.btn-success(href="/editbook?isbn=#{book.isbn}") 编辑图书
+							a.yahei.btn.btn-medium.btn-success(href="/book/editbook?isbn=#{book.isbn}") 编辑图书
 							| &nbsp;&nbsp;
 						- var flag = parseInt(book.book_number);
 						- if(flag <= 0)
 							a.yahei.btn.btn-medium.disabled.btn-apply(href="javascript:void(0);") 马上申请
 						- else
-							a.yahei.btn.btn-info.btn-medium.btn-apply(href="/apply/#{book.isbn}") 马上申请
+							a.yahei.btn.btn-info.btn-medium.btn-apply(href="/book/apply/#{book.isbn}") 马上申请
 				div.book_history
 					h3.historytitle 借阅历史
 					ul.hislist
@@ -55,7 +55,7 @@ block content
 							li.item #{com.username}说：#{com.content}
 				h3.mod-title 发表品论
 				div.commentarea
-					form.form-horizontal.form-comment(action="/savecomment",method="get")
+					form.form-horizontal.form-comment(action="/book/savecomment",method="get")
 						input(type="hidden", name="isbn", value="#{book.isbn}")
 						div.control-group
 							label.control-label(for="com-username") 用户名：
