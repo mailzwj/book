@@ -131,7 +131,7 @@ exports.canborrow = function(isbn, callback){
 			//throw err;
 			callback(false);
 		}else{
-			if(book && (book.book_total - book_borrowed) > 0){
+			if(book && (book.book_total - book.book_borrowed) > 0){
 				callback(true);
 			}else{
 				callback(false);
@@ -331,6 +331,33 @@ exports.pushcomment = function(isbn, username, comment, callback){
 			callback("err", "系统错误。");
 		}else{
 			callback("success", "评论成功。");
+		}
+	});
+};
+
+exports.mborrow = function(isbn, username, callback){
+	bcol.findOne({isbn: isbn}, function(err, book){
+		if(err){
+			callback("err", "系统错误。");
+		}else{
+			if(!book){
+				callback("err", "图书不存在。");
+			}else{
+				bcol.update({isbn: isbn}, {"$inc": {book_borrowed: 1, borrow_times: 1}}, function(err){
+					if(err){
+						callback("err", "系统错误。");
+					}else{
+						var date = new Date();
+						ls.insert({username: username, isbn: isbn, bookname: book.bookname, borrow_time: date, return_time: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000), status: 3,book_cate: book.book_cate}, function(err){
+							if(err){
+								callback("err", "借书申请发送失败，请重新尝试。");
+							}else{
+								callback("success", book.bookname);
+							}
+						});
+					}
+				});
+			}
 		}
 	});
 };

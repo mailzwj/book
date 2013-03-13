@@ -58,8 +58,11 @@ app.all("/savecomment", routes.login, routes.savecomment);
 
 /********** 移动路由 **********/
 var m = require("./routes/mobile");
-app.all("/login", m.mlogin);
-app.all("/mindex", m.mindex);
+app.all("/book/login", m.mlogin);
+app.all("/book/mindex", m.mindex);
+app.all("/book/scanborrow", m.scanborrow);
+app.all("/book/mdetail", m.mdetail);
+app.all("/book/madd", m.madd);
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
