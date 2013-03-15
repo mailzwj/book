@@ -58,7 +58,7 @@ exports.mlogin = function(req, res, next){
 						var d_user_info_obj = eval('(' + d_user_info + ')');
 
 						req.session.user_info_ob = {};
-						req.session.user_info_ob.nick = d_user_info_obj.data && d_user_info_obj.data.nicknamecn;
+						req.session.user_info_ob.nick = d_user_info_obj.data && d_user_info_obj.data.wangwang;
 						req.session.user_info_ob.work_id = d_user_info_obj.data && d_user_info_obj.data.staff_id;
 
 						users.isadmin(req, function (isadmin) {
