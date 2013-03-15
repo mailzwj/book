@@ -2,6 +2,7 @@ var express = require('express')
     , cfg = require("./config")
     , http = require('http')
     , path = require('path')
+    , _ = require('underscore')
     , MongoStore = require('connect-mongo')(express)
     , rootDir = require('./routes/rootdir').rootDir;
 
@@ -40,82 +41,46 @@ app.configure(function(){
     app.use(express.static(path.join(__dirname, 'public')));
 });
 
+
 /********** web路由 **********/
 var routes = require('./routes');
-var urlArr = [
-    '',
-    '/addbook',
-    '/savebook',
-    '/apply/:isbn',
-    '/manage',
-    '/check_borrow',
-    '/myborrow',
-    '/cancelborrow',
-    '/returnbook',
-    '/updatebook',
-    '/check_return',
-    '/editbook',
-    '/delbook',
-    '/detail/:isbn',
-    '/savecomment'
-];
-var routeArr = [
-    'index',
-    'addbook',
-    'savebook',
-    'apply',
-    'manage',
-    'checkborrow',
-    'myborrow',
-    'cancelborrow',
-    'returnbook',
-    'updatebook',
-    'checkreturn',
-    'editbook',
-    'delbook',
-    'detail',
-    'savecomment'
-];
-
-urlArr.forEach(function (v, i) {
-    app.all('/' + rootDir + v, routes.login, routes[routeArr[i]]);
+var webRoute = {
+    '': 'index',
+    '/addbook': 'addbook',
+    '/savebook': 'savebook',
+    '/apply/:isbn': 'apply',
+    '/manage': 'manage',
+    '/check_borrow': 'checkborrow',
+    '/myborrow': 'myborrow',
+    '/cancelborrow': 'cancelborrow',
+    '/returnbook': 'returnbook',
+    '/updatebook': 'updatebook',
+    '/check_return': 'checkreturn',
+    '/editbook': 'editbook',
+    '/delbook': 'delbook',
+    '/detail/:isbn': 'detail',
+    '/savecomment': 'savecomment'
+};
+_.each(webRoute, function (v, i) {
+   app.all('/' + rootDir + i, routes.login, routes[v]);
 });
 
 
-/********** 移动路由 **********//*
-<<<<<<< HEAD
-var m = require("./routes/mobile");
-app.all("/book/login", m.mlogin);
-app.all("/book/mindex", m.mindex);
-app.all("/book/scanborrow", m.scanborrow);
-app.all("/book/mdetail", m.mdetail);
-app.all("/book/madd", m.madd);
-=======*/
-var mRoutes = require("./routes/mobile");
-var mUrlArr = [
-    '/login',
-    '/mindex',
-    '/scanborrow',
-    '/mdetail',
-    '/madd',
-    '/mreturn'
-
-];
-var mRouteArr = [
-    'mlogin',
-    'mindex',
-    'scanborrow',
-    'mdetail',
-    'madd',
-    'mreturn'
-];
-
-mUrlArr.forEach(function (v, i) {
-    app.all('/' + rootDir + v, /*routes.login, */mRoutes[mRouteArr[i]]);
+/********** 移动路由 **********/
+var mobileRoutes = require("./routes/mobile");
+var mobileRoute = {
+    '/login': 'mlogin',
+    '/mindex': 'mindex',
+    '/scanborrow': 'scanborrow',
+    '/mdetail': 'mdetail',
+    '/madd': 'madd',
+    '/mreturn': 'mreturn'
+};
+_.each(mobileRoute, function (v, i) {
+   app.all('/' + rootDir + i, /*routes.login,*/ mobileRoutes[v]);
 });
 
 
-// >>>>>>> 95ebc7f0ec1c2b59d508afe6825a71e3095473c3
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
