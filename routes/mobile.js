@@ -5,20 +5,89 @@
 var users = require('./user');
 var books = require('./book');
 var http = require("http");
+var querystring = require('querystring');
 
 exports.mlogin = function(req, res, next){
+	var username = req.body.username,
+		password = req.body.password,
+		content = querystring.stringify(req.body);
+
+	var creq = http.request({
+		// host: 'uxx.etao.net',
+		// path: '/test/Idata.php',
+		host: 'ued.etao.net',
+		path: '/api/ucenter/login/login.php',
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'Content-Length': content.length
+		}
+	}, function (cres) {
+		var d='';
+		cres.setEncoding('utf8');
+		cres.on('data', function (data) {
+			d += data;
+		});
+		cres.on('end', function () {
+			console.log(d);
+			getUserInfo(d);
+		});
+		cres.on('close', function () {
+			console.log('ooh closed');
+			res.end('login server error');
+		});
+	});
+	creq.write(content);
+	creq.end();
+
+	function getUserInfo (d) {
+		var d = JSON.parse(d);
+		if (!d) {
+			return;
+		}
+		if (d.success == 1) {
+			var creq_user_info = http.get({
+					host: 'ux.etao.net',
+					path: '/api/ucenter/common/user.php?q=' + username
+				}, function (cres_user_info) {
+					var d_user_info = '';
+					cres_user_info.setEncoding('utf8');
+					cres_user_info.on('data', function (data) {
+						d_user_info  += data;
+					});
+					cres_user_info.on('end', function () {
+						var d_user_info_obj = eval('(' + d_user_info + ')');
+						console.log(/*d_user_info, 'end', */d_user_info_obj);
+						req.session.user_info_ob = {};
+						req.session.user_info_ob.nick = d_user_info_obj.data && d_user_info_obj.data.nicknamecn;
+						req.session.user_info_ob.work_id = d_user_info_obj.data && d_user_info_obj.data.staff_id;
+						// console.log(req.session.user_info_ob.nick);
+						
+						users.isadmin(req, function (isadmin) {
+							res.send("{\"isSuccess\": true, \"userinfo\": {\"nick\": \"" + req.session.user_info_ob.nick + "\", \"isadmin\": "+ isadmin +"}}");
+						});
+					});
+					cres_user_info.on('close', function () {
+						console.log('ooh closed');
+						res.end('userinfo server error');
+					});
+				});
+			// creq_user_info.end();
+		}
+	}
+
 	//users.login(req, res, next);
 	//var username = req.param("username") || "乐淘一少";
-	var username = "乐淘一少";
-	var userpass = req.param("userpass");
-	var cb = req.param("callback");
-	req.session.userinfo = {};
-	req.session.userinfo.nick = username;
-	if(cb){
-		res.send(cb + "({\"isSuccess\": true, \"userinfo\": {\"nick\": \"" + username + "\", \"email\": \"mailzwj@126.com\", \"isadmin\": 1}});");
-	}else{
-		res.send("var json={\"isSuccess\": true, \"userinfo\": {\"nick\": \"" + username + "\", \"email\": \"mailzwj@126.com\", \"isadmin\": 1}}");
-	}
+// 	var username = "乐淘一少";
+// 	var userpass = req.param("userpass");
+// 	var cb = req.param("callback");
+// 	req.session.userinfo = {};
+// 	req.session.userinfo.nick = username;
+// 	if(cb){
+// 		res.send(cb + "({\"isSuccess\": true, \"userinfo\": {\"nick\": \"" + username + "\", \"email\": \"mailzwj@126.com\", \"isadmin\": 1}});");
+// 	}else{
+// 		res.send("var json={\"isSuccess\": true, \"userinfo\": {\"nick\": \"" + username + "\", \"email\": \"mailzwj@126.com\", \"isadmin\": 1}}");
+// 	}
 };
 
 exports.mindex = function(req, res){
@@ -44,7 +113,7 @@ exports.mindex = function(req, res){
 
 exports.scanborrow = function(req, res){
 	var isbn = req.param("isbn");
-	var nick = req.session.userinfo.nick;
+	var nick = req.session.user_info_ob.nick;
 	var cb = req.param("callback");
 	if(isbn && nick){
 		books.canborrow(isbn, function(status){
@@ -195,8 +264,8 @@ exports.madd = function(req, res){
 exports.mreturn = function(req, res){
 	var nick = "";
 	var cb = req.param("callback");
-	if(req.session.userinfo && req.session.userinfo.nick){
-		nick = req.session.userinfo.nick;
+	if(req.session.user_info_ob && req.session.user_info_ob.nick){
+		nick = req.session.user_info_ob.nick;
 	}else{
 		if(cb){
 			res.send(cb + "({\"isSuccess\": false, \"error\": \"非法操作。\"});");
