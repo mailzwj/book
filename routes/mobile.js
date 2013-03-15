@@ -115,6 +115,7 @@ exports.scanborrow = function(req, res){
 	var isbn = req.param("isbn");
 	var nick = req.session.user_info_ob.nick;
 	var cb = req.param("callback");
+	console.log(req.session.user_info_ob,"--",nick);
 	if(isbn && nick){
 		books.canborrow(isbn, function(status){
 			if(status){
@@ -262,25 +263,16 @@ exports.madd = function(req, res){
 };
 
 exports.mreturn = function(req, res){
-	var nick = "";
+	var nick = req.param("rname");
 	var cb = req.param("callback");
-	if(req.session.user_info_ob && req.session.user_info_ob.nick){
-		nick = req.session.user_info_ob.nick;
-	}else{
-		if(cb){
-			res.send(cb + "({\"isSuccess\": false, \"error\": \"非法操作。\"});");
-		}else{
-			res.send("var json={\"isSuccess\": false, \"error\": \"非法操作。\"};");
-		}
-	}
-	var isbn = req.param("isbn");
+	var isbn = req.param("risbn");
 	if(nick && isbn){
-		books.ls.findOne({username: nick, isbn: isbn}, function(err, rs){
+		books.ls.findOne({username: nick, isbn: isbn, status: 3}, function(err, rs){
 			if(err){
 				if(cb){
 					res.send(cb + "({\"isSuccess\": false, \"error\": \"系统错误。\"});");
 				}else{
-					res.send("var json={\"isSuccess\": false, \"error\": \"系统错误。\"};");
+					res.send("{\"isSuccess\": false, \"error\": \"系统错误。\"};");
 				}
 			}else{
 				if(rs){
@@ -289,13 +281,13 @@ exports.mreturn = function(req, res){
 							if(cb){
 								res.send(cb + "({\"isSuccess\": false, \"error\": \"" + info + "\"});");
 							}else{
-								res.send("var json={\"isSuccess\": false, \"error\": \"" + info + "\"};");
+								res.send("{\"isSuccess\": false, \"error\": \"" + info + "\"}");
 							}
 						}else{
 							if(cb){
 								res.send(cb + "({\"isSuccess\": true, \"book\": \"" + info + "\"});");
 							}else{
-								res.send("var json={\"isSuccess\": true, \"book\": \"" + info + "\"};");
+								res.send("{\"isSuccess\": true, \"book\": \"" + info + "\"}");
 							}
 						}
 					});
@@ -303,7 +295,8 @@ exports.mreturn = function(req, res){
 					if(cb){
 						res.send(cb + "({\"isSuccess\": false, \"error\": \"未找到借书记录。\"});");
 					}else{
-						res.send("var json={\"isSuccess\": false, \"error\": \"未找到借书记录。\"};");
+						//console.log("{\"isSuccess\": false, \"error\": \"未找到借书记录。\"}");
+						res.send("{\"isSuccess\": false, \"error\": \"未找到借书记录。\"}");
 					}
 				}
 			}
@@ -312,7 +305,7 @@ exports.mreturn = function(req, res){
 		if(cb){
 			res.send(cb + "({\"isSuccess\": false, \"error\": \"参数错误。\"});");
 		}else{
-			res.send("var json={\"isSuccess\": false, \"error\": \"参数错误。\"};");
+			res.send("{\"isSuccess\": false, \"error\": \"参数错误。\"}");
 		}
 	}
 };
