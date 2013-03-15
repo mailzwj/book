@@ -29,7 +29,6 @@ exports.mlogin = function(req, res, next){
 			d += data;
 		});
 		cres.on('end', function () {
-			console.log(d);
 			getUserInfo(d);
 		});
 		cres.on('close', function () {
@@ -57,12 +56,11 @@ exports.mlogin = function(req, res, next){
 					});
 					cres_user_info.on('end', function () {
 						var d_user_info_obj = eval('(' + d_user_info + ')');
-						console.log(/*d_user_info, 'end', */d_user_info_obj);
+
 						req.session.user_info_ob = {};
-						req.session.user_info_ob.nick = d_user_info_obj.data && d_user_info_obj.data.nicknamecn;
+						req.session.user_info_ob.nick = d_user_info_obj.data && d_user_info_obj.data.wangwang;
 						req.session.user_info_ob.work_id = d_user_info_obj.data && d_user_info_obj.data.staff_id;
-						// console.log(req.session.user_info_ob.nick);
-						
+
 						users.isadmin(req, function (isadmin) {
 							res.send("{\"isSuccess\": true, \"userinfo\": {\"nick\": \"" + req.session.user_info_ob.nick + "\", \"isadmin\": "+ isadmin +"}}");
 						});
@@ -72,22 +70,8 @@ exports.mlogin = function(req, res, next){
 						res.end('userinfo server error');
 					});
 				});
-			// creq_user_info.end();
 		}
 	}
-
-	//users.login(req, res, next);
-	//var username = req.param("username") || "乐淘一少";
-// 	var username = "乐淘一少";
-// 	var userpass = req.param("userpass");
-// 	var cb = req.param("callback");
-// 	req.session.userinfo = {};
-// 	req.session.userinfo.nick = username;
-// 	if(cb){
-// 		res.send(cb + "({\"isSuccess\": true, \"userinfo\": {\"nick\": \"" + username + "\", \"email\": \"mailzwj@126.com\", \"isadmin\": 1}});");
-// 	}else{
-// 		res.send("var json={\"isSuccess\": true, \"userinfo\": {\"nick\": \"" + username + "\", \"email\": \"mailzwj@126.com\", \"isadmin\": 1}}");
-// 	}
 };
 
 exports.mindex = function(req, res){
