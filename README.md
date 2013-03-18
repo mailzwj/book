@@ -7,7 +7,25 @@ Mac：$ export NODE_ENV=production
 windows: set NODE_ENV=production  
 
 
-*开发前请绑定本地host为uxx.etao.net*，访问uxx.etao.net:端口/book.目前远程数据库使用[mongolab](https://mongolab.com/)
+*开发前请绑定本地host为uxx.etao.net*，访问uxx.etao.net:端口/book.目前远程数据库使用[mongolab](https://mongolab.com/)，并在server.js同级目录下添加config.js，内容为
+
+    var mongo = require("mongoskin");
+    module.exports = {
+        db: '',
+        port: 8012,
+        dburl: "远程数据库地址",
+        switchToLocal: function () {
+            this.port = 8080;
+            this.dburl = ":@127.0.0.1:27017/books";
+        },
+        start: function (local) {
+            if (local) {
+                this.switchToLocal();
+            }
+            this.db = mongo.db(this.dburl);
+        }
+    };
+
 
 ##图书管理系统设计说明
 ###1、数据库设计
@@ -90,4 +108,3 @@ lendhistory集合用于存储用户借书/还书的整个过程，也兼任查�
 -   jade文档：<https://github.com/visionmedia/jade>
 -   markdown文档：<http://daringfireball.net/projects/markdown/syntax>  
 -   使用nodejs和mongodb开发WebApp Nodepad：<http://dailyjs.com/tags.html#lmawa>
-
